@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface Crumb {
@@ -32,37 +35,89 @@ export interface AllocationBreadcrumbsProps {
 const crumbLinkClass =
   "rounded-sm text-[#9CA3AF] transition-colors hover:text-[#6B7280] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
 
-/** Paper 1HB-0: Payments / … / New Allocation — {customer} / {current page}. */
-export function allocationFlowCrumbs(
-  customer: string,
-  page: AllocationBreadcrumbPage,
-): Crumb[] {
-  return [
-    { label: "Payments", href: "/accounts" },
-    { label: "…" },
-    { label: `New Allocation — ${customer}`, href: "/allocation/import" },
-    { label: PAGE_LABEL[page] },
-  ];
-}
+const separator = (
+  <span className="text-[#D1D5DB]" aria-hidden>
+    /
+  </span>
+);
 
-/** Paper FP-0: Payments / … / Funding Pool / Invoices (current). */
-export function allocationApplyInvoicesCrumbs(): Crumb[] {
-  return [
-    { label: "Payments", href: "/accounts" },
-    { label: "…" },
-    { label: "Funding Pool", href: "/allocation/funding" },
-    { label: "Invoices" },
-  ];
-}
+function EllipsisMenu({ items }: { items: Crumb[] }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
 
-/** Paper MU-0: Payments / … / Invoices / Confirmation (current). */
-export function allocationReviewConfirmCrumbs(): Crumb[] {
-  return [
-    { label: "Payments", href: "/accounts" },
-    { label: "…" },
-    { label: "Invoices", href: "/allocation/apply" },
-    { label: "Confirmation" },
-  ];
+  useEffect(() => {
+    function handlePointer(e: MouseEvent | PointerEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    if (open) {
+      document.addEventListener("mousedown", handlePointer);
+      document.addEventListener("keydown", handleKey);
+      return () => {
+        document.removeEventListener("mousedown", handlePointer);
+        document.removeEventListener("keydown", handleKey);
+      };
+    }
+  }, [open]);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="relative inline-flex" ref={rootRef}>
+      <button
+        type="button"
+        id={`${menuId}-trigger`}
+        className={cn(
+          crumbLinkClass,
+          "inline-flex min-h-[1.25rem] min-w-[1.25rem] items-center justify-center px-0.5 font-semibold text-[#9CA3AF]",
+          open && "text-[#6B7280]",
+        )}
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-controls={open ? `${menuId}-menu` : undefined}
+        aria-label="Open hidden breadcrumb levels"
+        onClick={() => setOpen((o) => !o)}
+      >
+        …
+      </button>
+      {open ? (
+        <div
+          id={`${menuId}-menu`}
+          role="menu"
+          aria-labelledby={`${menuId}-trigger`}
+          className="absolute left-0 top-full z-50 mt-1 min-w-[14rem] rounded-md border border-[#E5E7EB] bg-white py-1 shadow-[0_10px_40px_-10px_rgba(17,24,39,0.2)]"
+        >
+          {items.map((item, i) => (
+            <div key={`${item.label}-${i}`} role="none">
+              {item.href ? (
+                <Link
+                  role="menuitem"
+                  href={item.href}
+                  className="block px-3 py-2 text-[13px] leading-snug text-[#374151] hover:bg-[#F9FAFB] focus-visible:bg-[#F9FAFB] focus-visible:outline-none"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <span
+                  role="menuitem"
+                  className="block px-3 py-2 text-[13px] leading-snug text-[#9CA3AF]"
+                  aria-disabled
+                >
+                  {item.label}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 interface SlaBadgeProps {
@@ -85,33 +140,113 @@ function SlaBadge({ label }: SlaBadgeProps) {
   );
 }
 
+function CrumbLinkOrText({ item, current }: { item: Crumb; current?: boolean }) {
+  if (current) {
+    return (
+      <span className="font-medium text-[#374151]" aria-current="page">
+        {item.label}
+      </span>
+    );
+  }
+  if (item.href) {
+    return (
+      <Link href={item.href} className={crumbLinkClass}>
+        {item.label}
+      </Link>
+    );
+  }
+  return <span className="text-[#9CA3AF]">{item.label}</span>;
+}
+
+/**
+ * Full hierarchy for analytics and IA. When there are more than four segments, the
+ * UI shows four slots: first, second, ellipsis menu (hidden middle), last (current).
+ */
+export function allocationFlowCrumbs(
+  customer: string,
+  page: AllocationBreadcrumbPage,
+): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Accounts", href: "/accounts" },
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: PAGE_LABEL[page] },
+  ];
+}
+
+export function allocationApplyInvoicesCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Accounts", href: "/accounts" },
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: "Funding Pool", href: "/allocation/funding" },
+    { label: "Invoices" },
+  ];
+}
+
+export function allocationReviewConfirmCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Accounts", href: "/accounts" },
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: "Funding Pool", href: "/allocation/funding" },
+    { label: "Invoices", href: "/allocation/apply" },
+    { label: "Confirmation" },
+  ];
+}
+
+/** Hub at /accounts — three segments; all visible (no ellipsis). */
+export function hubPaymentAllocationsCrumbs(): Crumb[] {
+  return [
+    { label: "Accounts", href: "/accounts" },
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations" },
+  ];
+}
+
 export function AllocationBreadcrumbs({ items, className, slaBadge }: AllocationBreadcrumbsProps) {
+  if (items.length === 0) return null;
+
   return (
-    <nav aria-label="Breadcrumb" className={cn("mb-3.5 flex flex-wrap items-center gap-1.5 text-[13px] leading-4", className)}>
+    <nav
+      aria-label="Breadcrumb"
+      className={cn("mb-3.5 flex flex-wrap items-center gap-1.5 text-[13px] leading-4", className)}
+    >
       <ol className="flex flex-wrap items-center gap-1.5">
-        {items.map((item, i) => {
-          const isLast = i === items.length - 1;
-          return (
-            <li key={`${item.label}-${i}`} className="flex items-center gap-1.5">
-              {i > 0 && (
-                <span className="text-[#D1D5DB]" aria-hidden>
-                  /
-                </span>
-              )}
-              {isLast ? (
-                <span className="font-medium text-[#374151]" aria-current="page">
-                  {item.label}
-                </span>
-              ) : item.href ? (
-                <Link href={item.href} className={crumbLinkClass}>
-                  {item.label}
-                </Link>
-              ) : (
-                <span className={cn("text-[#9CA3AF]", item.label === "…" && "select-none")}>{item.label}</span>
-              )}
+        {items.length <= 4 ? (
+          items.map((item, i) => (
+            <Fragment key={`${item.label}-${i}`}>
+              {i > 0 ? separator : null}
+              <li className="flex items-center gap-1.5">
+                <CrumbLinkOrText item={item} current={i === items.length - 1} />
+              </li>
+            </Fragment>
+          ))
+        ) : (
+          <>
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[0]} />
             </li>
-          );
-        })}
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[1]} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <EllipsisMenu items={items.slice(2, -1)} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[items.length - 1]} current />
+            </li>
+          </>
+        )}
       </ol>
       {slaBadge ? <SlaBadge label={slaBadge} /> : null}
     </nav>

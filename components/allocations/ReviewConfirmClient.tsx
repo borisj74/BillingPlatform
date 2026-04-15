@@ -111,7 +111,7 @@ export function ReviewConfirmClient() {
 
   return (
     <div className="mx-auto max-w-[1158px]">
-      <AllocationBreadcrumbs items={allocationReviewConfirmCrumbs()} />
+      <AllocationBreadcrumbs items={allocationReviewConfirmCrumbs(state.customer)} />
       <AllocationStepper current={4} hideActiveSuffix />
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">

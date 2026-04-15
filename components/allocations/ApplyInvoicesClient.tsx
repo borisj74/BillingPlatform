@@ -156,7 +156,7 @@ export function ApplyInvoicesClient() {
 
   return (
     <div className="mx-auto max-w-[1200px]">
-      <AllocationBreadcrumbs items={allocationApplyInvoicesCrumbs()} />
+      <AllocationBreadcrumbs items={allocationApplyInvoicesCrumbs(state.customer)} />
       <AllocationStepper current={3} hideActiveSuffix />
 
       {/* Paper 1O6-0 — single toolbar card */}

@@ -6,6 +6,10 @@ import { formatUsd } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { AllocationAiBanner } from "@/components/allocations/AllocationAiBanner";
+import {
+  AllocationBreadcrumbs,
+  hubPaymentAllocationsCrumbs,
+} from "@/components/allocations/AllocationBreadcrumbs";
 
 function StatusBadge({ status }: { status: Remittance["status"] }) {
   if (status === "Pending") {
@@ -45,13 +49,7 @@ export function RemittanceHub() {
 
   return (
     <div className="mx-auto max-w-[1344px]">
-      <div className="mb-3.5 flex flex-wrap items-center gap-1.5 text-[13px] text-[#9CA3AF]">
-        <span>Accounts</span>
-        <span className="text-[#D1D5DB]">/</span>
-        <span>Payments</span>
-        <span className="text-[#D1D5DB]">/</span>
-        <span className="font-medium text-[#374151]">Payment Allocations</span>
-      </div>
+      <AllocationBreadcrumbs items={hubPaymentAllocationsCrumbs()} />
 
       <AllocationAiBanner />
 
