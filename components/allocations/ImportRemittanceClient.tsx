@@ -79,12 +79,11 @@ export function ImportRemittanceClient() {
       <AllocationBreadcrumbs className="mb-0" items={allocationFlowCrumbs(titleCustomer, "remittance")} />
       <AllocationStepper className="mb-0" current={1} />
 
-      <div className="flex justify-center">
-        <div
-          className={cn(
-            "flex w-full max-w-[584px] flex-col gap-4 rounded-[10px] border border-[#E5E7EB] bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]",
-          )}
-        >
+      <div
+        className={cn(
+          "flex w-full flex-col gap-4 rounded-[10px] border border-[#E5E7EB] bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]",
+        )}
+      >
           <div className="space-y-1">
             <h2 className="text-[15px] font-semibold leading-[1.125rem] text-[#111827]">Remittance Advice</h2>
             <p className="text-[13px] leading-4 text-[#6B7280]">
@@ -177,7 +176,6 @@ export function ImportRemittanceClient() {
             </button>
           </div>
         </div>
-      </div>
     </div>
   );
 }
