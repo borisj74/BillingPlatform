@@ -14,7 +14,7 @@ export function TopBar({ searchValue: controlled, onSearchChange }: TopBarProps)
   const setValue = onSearchChange ?? setInternal;
 
   return (
-    <div className="flex h-[60px] shrink-0 items-center border-b border-[#E5E7EB] bg-white px-6">
+    <div className="flex h-[60px] shrink-0 items-center bg-white px-6">
       <div className="relative mx-auto w-full max-w-[280px]">
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" aria-hidden />
         <input

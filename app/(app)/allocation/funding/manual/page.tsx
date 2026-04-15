@@ -1,5 +1,5 @@
-import { FundingPoolBuilder } from "@/components/allocations/FundingPoolBuilder";
+import { ManualFundingPool } from "@/components/allocations/ManualFundingPool";
 
 export default function FundingManualPage() {
-  return <FundingPoolBuilder variant="manual" />;
+  return <ManualFundingPool />;
 }

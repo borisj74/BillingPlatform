@@ -54,6 +54,8 @@ type Action =
   | { type: "REORDER_POOL"; payload: string[] }
   | { type: "SET_APPLIED"; payload: { id: string; amount: number } }
   | { type: "AUTO_FILL" }
+  /** Distribute remaining pool balance across invoices in list order until exhausted. */
+  | { type: "ALLOCATE_REMAINDER" }
   | { type: "SET_NOTE"; payload: string }
   | { type: "RESET" };
 
@@ -109,6 +111,27 @@ function reducer(state: AllocationState, action: Action): AllocationState {
       const amounts: Record<string, number> = {};
       allInvoices.forEach((inv) => { amounts[inv.id] = inv.amount; });
       return { ...state, appliedAmounts: amounts };
+    }
+    case "ALLOCATE_REMAINDER": {
+      const creditTotal = allCredits
+        .filter((c) => state.selectedCreditIds.includes(c.id))
+        .reduce((sum, c) => sum + c.amount, 0);
+      const paymentTotal = state.paymentSelected ? 48000 : 0;
+      const poolTotal = creditTotal + paymentTotal;
+      const applied = Object.values(state.appliedAmounts).reduce((sum, v) => sum + v, 0);
+      let remaining = poolTotal - applied;
+      if (remaining <= 0) return state;
+      const next = { ...state.appliedAmounts };
+      for (const inv of allInvoices) {
+        const cur = next[inv.id] ?? 0;
+        const gap = inv.amount - cur;
+        if (gap <= 0) continue;
+        const add = Math.min(gap, remaining);
+        next[inv.id] = cur + add;
+        remaining -= add;
+        if (remaining <= 0) break;
+      }
+      return { ...state, appliedAmounts: next };
     }
     case "SET_NOTE":
       return { ...state, internalNote: action.payload };

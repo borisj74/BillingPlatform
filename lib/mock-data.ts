@@ -22,6 +22,8 @@ export const remittances: Remittance[] = [
   { id: "r6", customer: "Horizon Foods", paymentType: "Wire", date: "Mar 2", accounts: 24, paymentAmt: 35200, creditsReq: 4, received: "30m ago", status: "Pending", aiMatch: 95 },
   { id: "r7", customer: "Northwind Logistics", paymentType: "ACH", date: "Feb 27", accounts: 18, paymentAmt: 67900, creditsReq: 1, received: "6h ago", status: "Pending", aiMatch: 92 },
   { id: "r8", customer: "Brightline Dental", paymentType: "Wire", date: "Feb 28", accounts: 9, paymentAmt: 14300, creditsReq: 2, received: "4h ago", status: "Pending", aiMatch: 89 },
+  { id: "r9", customer: "Pacific Utilities", paymentType: "ACH", date: "Mar 2", accounts: 14, paymentAmt: 28900, creditsReq: 2, received: "1h ago", status: "Pending", aiMatch: 93 },
+  { id: "r10", customer: "Sterling Wholesale", paymentType: "Wire", date: "Mar 2", accounts: 22, paymentAmt: 41200, creditsReq: 3, received: "45m ago", status: "Pending", aiMatch: 90 },
 ];
 
 export interface Credit {

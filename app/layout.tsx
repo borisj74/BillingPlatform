@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${geistMono.variable} h-full antialiased`}>
       <body
-        className={`${inter.className} flex min-h-screen flex-col bg-[#F9FAFB] text-[#111827]`}
+        className={`${inter.className} flex h-full min-h-0 flex-col overflow-hidden bg-[#FAF9F9] text-[#111827]`}
       >
         {children}
       </body>

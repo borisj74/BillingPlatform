@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, X } from "lucide-react";
-import { toast } from "sonner";
 import { remittances, type Remittance } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { AllocationAiBanner } from "@/components/allocations/AllocationAiBanner";
 
 function StatusBadge({ status }: { status: Remittance["status"] }) {
   if (status === "Pending") {
@@ -54,34 +53,7 @@ export function RemittanceHub() {
         <span className="font-medium text-[#374151]">Payment Allocations</span>
       </div>
 
-      <div className="relative mb-5 flex flex-wrap items-center gap-3.5 rounded-[10px] border border-[#E6E7EB] bg-[#FBFBFB] p-4">
-        <div className="flex shrink-0 items-center justify-center rounded-md p-1">
-          <Sparkles className="h-5 w-5 text-brand" aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[13.5px] font-semibold text-[#111827]">
-            AI found 3 high-confidence matches ready for auto-allocation
-          </p>
-          <p className="mt-0.5 text-xs text-[#6B7280]">
-            Acme Corp ($48k), TechNova ($22.5k), Meridian Health ($31.7k) — 94% avg confidence.
-            Review and apply in one click.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="shrink-0 rounded-[7px] bg-brand px-3.5 py-1.5 text-[12.5px] font-semibold text-white hover:bg-brand/90"
-          onClick={() => toast.success("Auto-applied allocations (prototype)")}
-        >
-          Auto-apply all
-        </button>
-        <button
-          type="button"
-          className="shrink-0 text-[#616161] hover:text-[#111827]"
-          aria-label="Dismiss banner"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+      <AllocationAiBanner />
 
       <div className="mb-5 grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-[10px] border border-[#E5E7EB] bg-white px-5 py-4.5">
@@ -183,7 +155,7 @@ export function RemittanceHub() {
                         href={`/allocation/review?from=${r.id}`}
                         className={cn(
                           buttonVariants({ variant: "outline", size: "sm" }),
-                          "border-[#16A34A] font-medium text-[#16A34A]",
+                          "rounded-[4px] border-[#16A34A] font-medium text-[#16A34A]",
                         )}
                       >
                         View Details
@@ -193,7 +165,7 @@ export function RemittanceHub() {
                         href={`/allocation/import?customer=${encodeURIComponent(r.customer)}`}
                         className={cn(
                           buttonVariants({ variant: "outline", size: "sm" }),
-                          "border-brand font-semibold text-brand",
+                          "rounded-[4px] border-brand font-semibold text-brand hover:bg-brand-subtle hover:text-brand",
                         )}
                       >
                         Start Allocation
