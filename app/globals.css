@@ -5,6 +5,17 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-brand: #4F46E5;
+  --color-brand-subtle: #EEF2FF;
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-tertiary: #9CA3AF;
+  --color-success: #16A34A;
+  --color-success-subtle: #F0FDF4;
+  --color-error: #DC2626;
+  --color-error-subtle: #FEF2F2;
+  --color-warning: #D97706;
+  --color-warning-subtle: #FFFBEB;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
