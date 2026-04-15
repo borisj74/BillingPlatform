@@ -31,6 +31,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Import from GitHub (recommended)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This repo: [github.com/borisj74/BillingPlatform](https://github.com/borisj74/BillingPlatform)
+
+1. Sign in at [vercel.com](https://vercel.com) (use **Continue with GitHub** so Vercel can see the repo).
+2. **Add New… → Project** → **Import** `borisj74/BillingPlatform`.
+3. Leave defaults: **Framework Preset: Next.js**, **Root Directory** `.`, **Build Command** `next build`, **Output** (default).
+4. No environment variables are required for the current mock UI.
+5. Click **Deploy**. Production URL will be shown when the build finishes; every push to `main` will redeploy.
+
+Direct import (when logged in): [Import BillingPlatform on Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fborisj74%2FBillingPlatform).
+
+### CLI (optional)
+
+```bash
+npm i -g vercel   # or: npx vercel
+vercel login
+vercel link       # link to the Vercel project once it exists
+vercel --prod     # production deploy
+```
+
+See [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
