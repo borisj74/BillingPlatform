@@ -32,8 +32,14 @@ const SECTIONS: { id: string; title: string; subtitle?: string; items: FlowLink[
   {
     id: "import",
     title: "B · New allocation — Import remittance",
-    subtitle: "Steps 2-1 → 2-3 share one route; switch format tabs inside the UI.",
+    subtitle: "Open the PDF parsed review first; earlier upload states live on the import route (tabs).",
     items: [
+      {
+        href: "/allocation/import/parsed?format=pdf",
+        label: "S2 — Import · Parsed (PDF success)",
+        paper: "58-0 · IUS-0",
+        note: "Parse success banner + split review after continue (PDF path).",
+      },
       {
         href: "/allocation/import?customer=Acme%20Corp",
         label: "Screens 2-1 & 2-2 — Import (early states)",
@@ -48,9 +54,9 @@ const SECTIONS: { id: string; title: string; subtitle?: string; items: FlowLink[
       },
       {
         href: "/allocation/import/parsed?format=edi",
-        label: "S2 — Import · Parsed (success)",
+        label: "S2 — Import · Parsed (EDI success)",
         paper: "58-0",
-        note: "Parse success banner + split review after continue.",
+        note: "Parse success banner + split review (EDI 820 path).",
       },
       {
         href: "/allocation/import/error?customer=Acme%20Corp",
