@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -248,15 +249,17 @@ export function AiSuggestionsClient() {
         <div className="flex shrink-0 gap-2">
           <Link
             href="/allocation/funding"
-            className="flex min-w-[120px] items-center justify-center rounded-[4px] border border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-[16px] text-[#4F46E5] hover:bg-[#EEF2FF]"
+            className="flex min-w-[120px] items-center justify-center gap-2 rounded-[4px] border border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-[16px] text-[#4F46E5] hover:bg-[#EEF2FF]"
           >
-            ← Back
+            <NavArrowLeft />
+            <span>Back</span>
           </Link>
           <Link
             href="/allocation/apply"
-            className="flex min-w-[220px] items-center justify-center rounded-[4px] bg-[#4F46E5] px-[13px] py-[13px] text-center text-[14px] font-medium leading-[18px] text-white hover:bg-[#4338CA]"
+            className="flex min-w-[220px] items-center justify-center gap-2 rounded-[4px] bg-[#4F46E5] px-[13px] py-[13px] text-center text-[14px] font-medium leading-[18px] text-white hover:bg-[#4338CA]"
           >
-            Continue to Apply Invoices →
+            <span>Continue to Apply Invoices</span>
+            <NavArrowRight variant="onPrimary" />
           </Link>
         </div>
       </div>

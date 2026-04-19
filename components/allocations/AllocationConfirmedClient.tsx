@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 
 /** Paper GIF-0 — Screen 6 success / allocation confirmed */
 export function AllocationConfirmedClient() {
@@ -43,15 +44,17 @@ export function AllocationConfirmedClient() {
         <div className="mt-2 flex w-full shrink-0 flex-wrap items-center justify-center gap-3">
           <Link
             href="/accounts"
-            className="flex min-h-11 min-w-0 shrink-0 items-center justify-center rounded-sm bg-[#4F46E5] px-[13px] py-[13px] text-sm font-medium leading-[18px] text-white hover:bg-[#4338CA]"
+            className="flex min-h-11 min-w-0 shrink-0 items-center justify-center gap-2 rounded-sm bg-[#4F46E5] px-[13px] py-[13px] text-sm font-medium leading-[18px] text-white hover:bg-[#4338CA]"
           >
-            View allocations
+            <span>View allocations</span>
+            <NavArrowRight variant="onPrimary" />
           </Link>
           <Link
             href="/home"
-            className="flex min-h-11 w-[130px] shrink-0 items-center justify-center rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] hover:bg-brand-subtle"
+            className="flex min-h-11 w-[130px] shrink-0 items-center justify-center gap-2 rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] hover:bg-brand-subtle"
           >
-            Done
+            <NavArrowLeft />
+            <span>Done</span>
           </Link>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { toast } from "sonner";
 import {
   AllocationBreadcrumbs,
-  allocationApplyInvoicesCrumbs,
+  allocationApplyPaperCrumbs,
 } from "@/components/allocations/AllocationBreadcrumbs";
 import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { getFundingPoolTotal, getTotalApplied, useAllocation } from "@/lib/allocation-store";
@@ -40,22 +40,22 @@ function SourceCell({ sources }: { sources: string[] }) {
       {sources.map((token) => {
         if (token === "PYMT") {
           return (
-            <div key={`${token}-row`} className="flex flex-wrap items-baseline gap-2">
-              <span className="rounded-md bg-brand-subtle px-2 py-0.5 text-[11px] font-semibold text-brand">
+            <div key={`${token}-row`} className="flex flex-wrap items-baseline gap-1.25">
+              <span className="rounded-[3px] bg-[#DBEAFE] px-1.25 py-0.5 text-[10.5px] font-bold text-[#1D4ED8]">
                 PYMT
               </span>
-              <span className="text-[11px] text-[#6B7280]">{paymentDetails.method}</span>
+              <span className="text-xs text-[#374151]">Wire</span>
             </div>
           );
         }
         const cr = creditByNumber(token);
         return (
-          <div key={token} className="flex flex-wrap items-baseline gap-2">
-            <span className="rounded-md bg-[#F3E8FF] px-2 py-0.5 text-[11px] font-semibold text-[#7C3AED]">
+          <div key={token} className="flex flex-wrap items-baseline gap-1.25">
+            <span className="rounded-[3px] bg-[#F3E8FF] px-1.25 py-0.5 text-[10.5px] font-bold text-[#7C3AED]">
               {token}
             </span>
             {cr ? (
-              <span className="text-[11px] tabular-nums text-[#6B7280]">{formatUsd(cr.amount)}</span>
+              <span className="text-[11.5px] tabular-nums text-[#374151]">{formatUsd(cr.amount)}</span>
             ) : null}
           </div>
         );
@@ -64,7 +64,7 @@ function SourceCell({ sources }: { sources: string[] }) {
   );
 }
 
-/** Paper FVO-0 — bordered field, value + pencil; no number spinners. */
+/** Paper LJ7-0 (FP-0) — Applied column: right-aligned value, purple border, no adornment. */
 function AppliedAmountCell({
   value,
   onChange,
@@ -75,7 +75,7 @@ function AppliedAmountCell({
   ariaLabel: string;
 }) {
   return (
-    <div className="flex min-w-[108px] max-w-[140px] flex-1 items-center justify-between gap-1 rounded-md border border-solid border-brand bg-white p-1.5 antialiased">
+    <div className="flex min-h-[30px] min-w-[108px] max-w-[140px] flex-1 items-center justify-end gap-1 rounded-md border border-solid border-[#4F46E5] bg-white p-1.5 antialiased">
       <input
         type="number"
         inputMode="decimal"
@@ -86,26 +86,10 @@ function AppliedAmountCell({
         onChange={(e) => onChange(Number(e.target.value) || 0)}
         className={cn(
           spinNone,
-          "min-w-0 flex-1 border-0 bg-transparent p-0 text-xs font-medium text-[#111827] tabular-nums shadow-none outline-none",
+          "min-w-0 w-full border-0 bg-transparent p-0 text-right text-xs font-medium tabular-nums text-[#111827] shadow-none outline-none",
           "focus-visible:ring-0",
         )}
       />
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="size-[9px] shrink-0 text-brand opacity-40"
-        aria-hidden
-      >
-        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-        <path d="m15 5 4 4" />
-      </svg>
     </div>
   );
 }
@@ -143,20 +127,24 @@ export function ApplyInvoicesClient() {
   const wirePct = wireCap > 0 ? Math.round((wireUsed / wireCap) * 100) : 0;
 
   const creditUsageLines = useMemo(() => {
-    return state.selectedCreditIds
+    const pool = getFundingPoolTotal(state);
+    const appliedTotal = getTotalApplied(state);
+    const lines = state.selectedCreditIds
       .map((id) => {
         const c = credits.find((x) => x.id === id);
         if (!c) return null;
-        const used = sourceShareApplied(c.amount, applied, poolTotal);
+        const used = sourceShareApplied(c.amount, appliedTotal, pool);
         const pct = c.amount > 0 ? Math.round((used / c.amount) * 100) : 0;
         return { id, number: c.number, used, cap: c.amount, pct };
       })
       .filter(Boolean) as { id: string; number: string; used: number; cap: number; pct: number }[];
-  }, [state.selectedCreditIds, applied, poolTotal]);
+    const order = state.fundingPoolOrder.filter((x) => x !== "payment");
+    return [...lines].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  }, [state]);
 
   return (
     <div className="mx-auto max-w-[1200px]">
-      <AllocationBreadcrumbs items={allocationApplyInvoicesCrumbs(state.customer)} />
+      <AllocationBreadcrumbs items={allocationApplyPaperCrumbs(state.customer)} variant="applyFp" />
       <AllocationStepper current={3} hideActiveSuffix />
 
       {/* Paper 1O6-0 — single toolbar card */}
@@ -167,7 +155,7 @@ export function ApplyInvoicesClient() {
         </div>
         <div className="min-w-[12px] grow basis-0" aria-hidden />
         <span className="text-[13px] leading-4 text-[#6B7280]">Applied:</span>
-        <span className="text-[15px] font-bold leading-[18px] text-brand">{formatUsd(applied)}</span>
+        <span className="text-[15px] font-bold leading-[18px] text-[#4F46E5]">{formatUsd(applied)}</span>
         <span className="text-[13px] leading-4 text-[#9CA3AF]">of {formatUsd(poolTotal)}</span>
         {poolFullyAllocated ? (
           <div className="flex items-center gap-1.5 rounded-[20px] bg-[#F0FDF4] py-1 pl-3 pr-3">
@@ -177,7 +165,7 @@ export function ApplyInvoicesClient() {
         ) : null}
         <button
           type="button"
-          className="flex items-center gap-1.5 rounded-[4px] border border-[#C7D2FE] bg-brand-subtle px-3 py-1.5 text-[12.5px] font-semibold text-brand transition-colors hover:bg-[#E0E7FF]"
+          className="flex items-center gap-1.5 rounded-[7px] border border-[#C7D2FE] bg-[#EEF2FF] px-3 py-1.5 text-[12.5px] font-semibold text-[#4F46E5] transition-colors hover:bg-[#E0E7FF]"
           onClick={() => {
             dispatch({ type: "AUTO_FILL" });
             toast.success("Auto-filled open balances (prototype)");
@@ -190,7 +178,7 @@ export function ApplyInvoicesClient() {
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,242px)] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,338px)] lg:items-start">
         <div className="min-w-0 overflow-hidden rounded-[10px] border border-solid border-[#E5E7EB] bg-white">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-left text-sm">
@@ -215,7 +203,7 @@ export function ApplyInvoicesClient() {
                   <tr key={inv.id} className="border-b border-[#F3F4F6] last:border-b-0">
                     <td className="px-4 py-3 align-top">
                       <div className="font-semibold text-text-primary">{inv.number}</div>
-                      <div className="text-[11px] text-[#9CA3AF]">Due {inv.due}</div>
+                      <div className="text-[11.5px] text-[#9CA3AF]">{inv.due}</div>
                     </td>
                     <td className="px-4 py-3 align-top text-[#374151]">{inv.account}</td>
                     <td className="px-4 py-3 align-top">
@@ -258,25 +246,29 @@ export function ApplyInvoicesClient() {
               })}
             </tbody>
             <tfoot>
-              <tr className="border-t border-[#E5E7EB] bg-[#F9FAFB]">
+              <tr className="border-t border-[#E5E7EB] bg-[#F8FAFC]">
                 <td colSpan={7} className="px-4 py-3 align-middle">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-xs leading-relaxed text-[#6B7280]">
-                      {remaining > EPS ? (
-                        <>
-                          <span className="font-medium text-text-primary">{formatUsd(remaining)}</span> left in the
-                          funding pool. Distribute to invoices above or review allocation.
-                        </>
-                      ) : (
-                        <>Pool balance is fully allocated across these invoices.</>
-                      )}
+                    <p className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-[#6B7280]">
+                      <span className="mt-1.5 size-1.75 shrink-0 rounded-full bg-[#9CA3AF]" aria-hidden />
+                      <span>
+                        {remaining > EPS ? (
+                          <>
+                            Remaining pool balance of{" "}
+                            <span className="font-medium text-[#374151]">{formatUsd(remaining)}</span> will stay as
+                            unallocated credit on account.
+                          </>
+                        ) : (
+                          <>Pool balance is fully allocated across these invoices.</>
+                        )}
+                      </span>
                     </p>
                     <button
                       type="button"
                       disabled={remaining <= EPS}
                       className={cn(
                         buttonVariants({ variant: "outline", size: "sm" }),
-                        "shrink-0 border-[#D1D5DB] bg-white text-[#374151] disabled:opacity-50",
+                        "shrink-0 rounded-md border-[#D1D5DB] bg-white text-[12.5px] text-[#374151] disabled:opacity-50",
                       )}
                       onClick={() => {
                         dispatch({ type: "ALLOCATE_REMAINDER" });
@@ -293,39 +285,37 @@ export function ApplyInvoicesClient() {
           </div>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-4">
-          <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-4">
-            <h2 className="mb-2.5 text-[12.5px] font-semibold uppercase tracking-[0.04em] text-[#6B7280]">
-              Funding Pool Status
-            </h2>
-            <dl className="space-y-2 text-sm">
-              <div className="flex justify-between gap-2">
-                <dt className="text-[#6B7280]">Pool Total</dt>
-                <dd className="tabular-nums font-semibold text-text-primary">{formatUsd(poolTotal)}</dd>
+        <aside className="flex min-w-0 flex-col gap-3 lg:w-[338px]">
+          <div className="overflow-hidden rounded-[10px] border border-[#E5E7EB] bg-white">
+            <div className="flex items-center justify-between border-b border-[#F1F5F9] px-4 py-3.5">
+              <h2 className="text-sm font-semibold text-[#0F172A]">Funding Pool Status</h2>
+            </div>
+            <div className="flex flex-col gap-1.5 border-t border-[#E5E7EB] px-4 py-3">
+              <div className="mb-1.5 flex justify-between gap-2">
+                <span className="text-[12.5px] text-[#6B7280]">Pool Total</span>
+                <span className="text-[13px] font-semibold tabular-nums text-[#111827]">{formatUsd(poolTotal)}</span>
               </div>
-              <div className="flex justify-between gap-2">
-                <dt className="text-[#6B7280]">Applied</dt>
-                <dd className="tabular-nums font-semibold text-brand">{formatUsd(applied)}</dd>
+              <div className="mb-1.5 flex justify-between gap-2">
+                <span className="text-[12.5px] text-[#6B7280]">Applied</span>
+                <span className="text-[13px] font-semibold tabular-nums text-[#4F46E5]">{formatUsd(applied)}</span>
               </div>
-            </dl>
-            <div className="mt-3">
-              <div className="h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
+              <div className="my-2.5 h-1.5 overflow-hidden rounded-[3px] bg-[#E5E7EB]">
                 <div
-                  className="h-full rounded-full bg-brand transition-[width]"
+                  className="h-full rounded-[3px] bg-[#4F46E5] transition-[width]"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
-            </div>
-            <div className="mt-3 flex justify-between gap-2 text-sm">
-              <span className="text-[#6B7280]">Remaining</span>
-              <span
-                className={cn(
-                  "tabular-nums font-semibold",
-                  remaining > EPS ? "text-warning" : "text-[#6B7280]",
-                )}
-              >
-                {formatUsd(Math.max(0, remaining))}
-              </span>
+              <div className="flex items-end justify-between gap-2 border-t border-[#F3F4F6] pt-2">
+                <span className="text-sm font-semibold text-[#111827]">Remaining</span>
+                <span
+                  className={cn(
+                    "text-[15px] font-bold tabular-nums leading-[18px]",
+                    remaining > EPS ? "text-[#F59E0B]" : "text-[#6B7280]",
+                  )}
+                >
+                  {formatUsd(Math.max(0, remaining))}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -338,8 +328,8 @@ export function ApplyInvoicesClient() {
               <div className="mb-2">
                 <div className="mb-1 flex items-center justify-between">
                   <span className="text-[13px] font-medium text-[#111827]">Wire Transfer</span>
-                  <span className="inline-block shrink-0 rounded-sm bg-brand-subtle px-1.75 py-0.5">
-                    <span className="text-[11.5px] font-bold leading-[14px] text-brand">{wirePct}%</span>
+                  <span className="inline-block shrink-0 rounded-sm bg-[#EEF2FF] px-1.75 py-0.5">
+                    <span className="text-[11.5px] font-bold leading-[14px] text-[#4F46E5]">{wirePct}%</span>
                   </span>
                 </div>
                 <p className="text-[11.5px] leading-[14px] text-[#9CA3AF]">
@@ -353,8 +343,8 @@ export function ApplyInvoicesClient() {
                 <div key={line.id} className="mb-2 last:mb-0">
                   <div className="mb-1 flex items-center justify-between">
                     <span className="text-[13px] font-medium text-[#111827]">{line.number}</span>
-                    <span className="inline-block shrink-0 rounded-sm bg-success-subtle px-1.75 py-0.5">
-                      <span className="text-[11.5px] font-bold leading-[14px] text-success">{line.pct}%</span>
+                    <span className="inline-block shrink-0 rounded-sm bg-[#F0FDF4] px-1.75 py-0.5">
+                      <span className="text-[11.5px] font-bold leading-[14px] text-[#16A34A]">{line.pct}%</span>
                     </span>
                   </div>
                   <p className="text-[11.5px] leading-[14px] text-[#9CA3AF]">
@@ -400,16 +390,15 @@ export function ApplyInvoicesClient() {
           {/* Paper 1T6-0 — primary CTA */}
           <Link
             href="/allocation/review"
-            className="flex w-full flex-col items-center justify-center gap-[13px] rounded-sm bg-[#4F46E5] px-[13px] py-[13px] text-center text-sm font-medium leading-[18px] text-white antialiased hover:bg-[#4338CA]"
+            className="flex w-full flex-col items-center justify-center gap-1 rounded-sm bg-[#4F46E5] px-[13px] py-[13px] text-center text-sm font-medium leading-[18px] text-white antialiased hover:bg-[#4338CA]"
           >
-            Review & Confirm →
+            <span>Review & Confirm →</span>
           </Link>
-          {/* Paper G5H-0 — secondary CTA */}
           <Link
             href="/allocation/funding"
-            className="flex w-full flex-col items-center justify-center gap-[13px] self-stretch rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] antialiased hover:bg-brand-subtle"
+            className="flex w-full flex-col items-center justify-center gap-1 self-stretch rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] antialiased hover:bg-[#EEF2FF]"
           >
-            ← Back to Funding Pool
+            <span>← Back to Funding Pool</span>
           </Link>
         </aside>
       </div>

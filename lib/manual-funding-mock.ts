@@ -1,46 +1,64 @@
-/** Static copy for Paper node 2UT-0 — manual funding fallback (Global Retail scenario). */
+/** Static copy for Paper artboard 2UT-0 — manual funding fallback (Global Retail Inc.). */
+
+export const MANUAL_SCENARIO_CUSTOMER = "Global Retail Inc.";
 
 export interface ManualHighConfidenceCredit {
   id: string;
   number: string;
   line: string;
-  ai: number;
+  /** Paper row shows this % in the purple confidence pill (may differ from model score). */
+  confidenceDisplay: number;
   amount: number;
 }
 
+/** Paper order: CR-8036, CR-8042, CR-8039, CR-8031 */
 export const manualHighConfidenceCredits: ManualHighConfidenceCredit[] = [
+  {
+    id: "hc3",
+    number: "CR-8036",
+    line: "Global Retail Inc. · Texas Southwest · Issued Feb 8",
+    confidenceDisplay: 98,
+    amount: 5800,
+  },
   {
     id: "hc1",
     number: "CR-8042",
     line: "Global Retail Inc. · West Coast HQ · Issued Feb 10",
-    ai: 84,
+    confidenceDisplay: 95,
     amount: 8400,
   },
   {
     id: "hc2",
     number: "CR-8039",
     line: "Global Retail Inc. · East Coast Hub · Issued Feb 12",
-    ai: 81,
+    confidenceDisplay: 81,
     amount: 6200,
-  },
-  {
-    id: "hc3",
-    number: "CR-8036",
-    line: "Global Retail Inc. · Texas Southwest · Issued Feb 8",
-    ai: 78,
-    amount: 5800,
   },
   {
     id: "hc4",
     number: "CR-8031",
     line: "Global Retail Inc. · Florida Branch · Issued Feb 15",
-    ai: 75,
+    confidenceDisplay: 75,
     amount: 4100,
   },
 ];
 
 export const MANUAL_REVIEW_TOTAL = 7;
 export const MANUAL_HIGH_CONFIDENCE_COUNT = manualHighConfidenceCredits.length;
+
+/** Paper 2UT-0 — check payment in sidebar (not Acme wire). */
+export const manualScenarioCheckPayment = {
+  primary: "Check · WR-20260228-GRI",
+  secondary: "Payment · Feb 28",
+  amount: 112_000,
+};
+
+/** Paper sidebar subtotals / pool total. */
+export const MANUAL_SIDEBAR_CREDITS_CONFIRMED = 24_500;
+export const MANUAL_POTENTIAL_ADDITIONAL = 23_200;
+export const MANUAL_POOL_TOTAL = 136_500;
+
+export const POTENTIAL_ADDITIONAL = MANUAL_POTENTIAL_ADDITIONAL;
 
 /** Accounts shown in “Find in {customer} accounts…” (subset of the scoped directory). */
 export interface ManualScopedAccount {

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { IconInfo } from "@/components/layout/paper-sidebar/NavGlyphIcons";
+import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 import {
   AllocationBreadcrumbs,
   allocationReviewConfirmCrumbs,
@@ -188,15 +190,30 @@ export function VarianceBlockedClient() {
             <div className="flex flex-col gap-2">
               <Link
                 href="/allocation/funding"
-                className="block w-full rounded-md border border-[#C7D2FE] bg-[#EEF2FF] px-3.5 py-2.5 text-[12.5px] font-medium leading-4 text-[#4F46E5] hover:bg-[#E0E7FF]"
+                className="flex w-full items-center gap-2.5 rounded-md border border-[#C7D2FE] bg-[#EEF2FF] px-3.5 py-2.5 text-[12.5px] font-medium leading-4 text-[#4F46E5] hover:bg-[#E0E7FF]"
               >
-                Go back to Pool and add $200
+                <span className="inline-flex shrink-0" aria-hidden>
+                  <NavArrowLeft />
+                </span>
+                <span className="min-w-0 flex-1 text-left">Go back to Pool and add $200</span>
               </Link>
-              <button className="w-full rounded-md border border-[#C7D2FE] bg-[#EEF2FF] px-3.5 py-2.5 text-left text-[12.5px] font-medium leading-4 text-[#4F46E5] hover:bg-[#E0E7FF]">
-                Adjust remittance declared total
+              <button
+                type="button"
+                className="flex w-full items-center gap-2.5 rounded-md border border-[#C7D2FE] bg-[#EEF2FF] px-3.5 py-2.5 text-left text-[12.5px] font-medium leading-4 text-[#4F46E5] hover:bg-[#E0E7FF]"
+              >
+                <span className="min-w-0 flex-1">Adjust remittance declared total</span>
+                <span className="inline-flex shrink-0" aria-hidden>
+                  <NavArrowRight />
+                </span>
               </button>
-              <button className="w-full rounded-md border border-[#E5E7EB] bg-white px-3.5 py-2.5 text-left text-[12.5px] font-medium leading-4 text-[#6B7280] hover:bg-[#F9FAFB]">
-                Flag for supervisor review
+              <button
+                type="button"
+                className="flex w-full items-center gap-2.5 rounded-md border border-[#E5E7EB] bg-white px-3.5 py-2.5 text-left text-[12.5px] font-medium leading-4 text-[#6B7280] hover:bg-[#F9FAFB]"
+              >
+                <span className="inline-flex shrink-0 text-[#6B7280]" aria-hidden>
+                  <IconInfo />
+                </span>
+                <span className="min-w-0 flex-1">Flag for supervisor review</span>
               </button>
             </div>
           </div>
@@ -228,15 +245,18 @@ export function VarianceBlockedClient() {
             </p>
             <Link
               href="/allocation/apply"
-              className="flex w-full items-center justify-center rounded-sm border border-[#4F46E5] bg-white px-3 py-3 text-[13px] font-medium leading-4 text-[#4F46E5] hover:bg-brand-subtle"
+              className="flex w-full items-center justify-center gap-2 rounded-sm border border-[#4F46E5] bg-white px-3 py-3 text-[13px] font-medium leading-4 text-[#4F46E5] hover:bg-brand-subtle"
             >
-              ← Edit Allocations
+              <NavArrowLeft />
+              <span>Edit Allocations</span>
             </Link>
             <button
               disabled
-              className="w-full cursor-not-allowed rounded-sm bg-[#D1D5DB] px-3 py-3 text-[14px] font-medium leading-[18px] text-[#9DA3AF]"
+              type="button"
+              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-sm bg-[#D1D5DB] px-3 py-3 text-[14px] font-medium leading-[18px] text-[#9DA3AF]"
             >
-              Confirm →
+              <span>Confirm</span>
+              <NavArrowRight variant="muted" />
             </button>
           </div>
         </div>

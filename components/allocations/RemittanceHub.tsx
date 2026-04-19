@@ -11,6 +11,9 @@ import {
   hubPaymentAllocationsCrumbs,
 } from "@/components/allocations/AllocationBreadcrumbs";
 
+/** Paper artboard 1-0 — Pending Remittances table shows eight rows (not the full mock list). */
+const HUB_TABLE_ROW_COUNT = 8 as const;
+
 function StatusBadge({ status }: { status: Remittance["status"] }) {
   if (status === "Pending") {
     return (
@@ -46,6 +49,7 @@ function AiMatchCell({ value }: { value: number | null }) {
 
 export function RemittanceHub() {
   const pendingCount = remittances.filter((r) => r.status === "Pending").length;
+  const hubRows = remittances.slice(0, HUB_TABLE_ROW_COUNT);
 
   return (
     <div className="mx-auto max-w-[1344px]">
@@ -53,30 +57,30 @@ export function RemittanceHub() {
 
       <AllocationAiBanner />
 
-      <div className="mb-5 grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-5.5 grid grid-cols-1 gap-3.5 antialiased sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-[10px] border border-[#E5E7EB] bg-white px-5 py-4.5">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-[#9CA3AF]">
             Pending Remittances
           </div>
           <div className="text-[28px] font-bold leading-none text-[#111827]">{pendingCount}</div>
           <div className="mt-1.5 text-xs font-medium text-[#F59E0B]">↑ 3 new today</div>
         </div>
         <div className="rounded-[10px] border border-[#E5E7EB] bg-white px-5 py-4.5">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-[#9CA3AF]">
             Unallocated Payments
           </div>
           <div className="text-[28px] font-bold leading-none text-[#111827]">$184,320</div>
           <div className="mt-1.5 text-xs text-[#6B7280]">Across 12 payments</div>
         </div>
         <div className="rounded-[10px] border border-[#E5E7EB] bg-white px-5 py-4.5">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-[#9CA3AF]">
             Available Credits
           </div>
           <div className="text-[28px] font-bold leading-none text-[#111827]">$42,750</div>
           <div className="mt-1.5 text-xs text-[#6B7280]">Across 8 accounts</div>
         </div>
         <div className="rounded-[10px] border border-[#E5E7EB] bg-white px-5 py-4.5">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-[#9CA3AF]">
             Allocated Today
           </div>
           <div className="text-[28px] font-bold leading-none text-[#111827]">$95,200</div>
@@ -84,15 +88,17 @@ export function RemittanceHub() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-[10px] border border-[#E5E7EB] bg-white">
-        <div className="flex flex-wrap items-center gap-2 border-b border-[#E5E7EB] px-5 pb-3.5 pt-4">
-          <h2 className="text-[15px] font-bold text-[#111827]">Pending Remittances</h2>
-          <span className="inline-block rounded-[20px] bg-brand-subtle px-2.5 py-0.5 text-[11px] font-bold text-brand">
-            {pendingCount} awaiting
-          </span>
-          <div className="flex-1" />
-          <span className="text-[13px] text-[#6B7280]">All customers</span>
-          <span className="text-[13px] text-[#6B7280]">All statuses</span>
+      <div className="overflow-hidden rounded-[10px] border border-[#E5E7EB] bg-white antialiased">
+        <div className="flex min-w-0 flex-wrap items-center self-stretch border-b border-[#E5E7EB] px-5 pb-3.5 pt-4 text-xs/4">
+          <h2 className="text-[15px] font-bold leading-[1.125rem] text-[#111827]">Pending Remittances</h2>
+          <div className="ml-2.5 inline-block rounded-[20px] bg-[#EEF2FF] px-2.25 py-0.5">
+            <span className="inline-block text-[11px] font-bold leading-[0.875rem] text-[#4F46E5]">
+              {pendingCount} awaiting
+            </span>
+          </div>
+          <div className="h-0 min-w-0 grow basis-[0%]" aria-hidden />
+          <span className="mr-4 text-[13px] leading-4 text-[#6B7280]">All customers</span>
+          <span className="text-[13px] leading-4 text-[#6B7280]">All statuses</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -113,7 +119,7 @@ export function RemittanceHub() {
               </tr>
             </thead>
             <tbody>
-              {remittances.map((r) => (
+              {hubRows.map((r) => (
                 <tr
                   key={r.id}
                   className={cn(

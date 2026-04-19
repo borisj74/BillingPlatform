@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   AllocationBreadcrumbs,
-  allocationFlowCrumbs,
+  allocationImportPaperCrumbs,
 } from "@/components/allocations/AllocationBreadcrumbs";
 import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { FileDocumentGlyph } from "@/components/allocations/RemittanceAdviceFileCard";
@@ -13,6 +13,7 @@ import type { Invoice } from "@/lib/mock-data";
 import { credits as allCredits, invoices as allInvoices, paymentDetails } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 import { Input } from "@/components/ui/input";
+import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 import { cn } from "@/lib/utils";
 
 /** Paper 3N9-0 — unmatched line items (left column) */
@@ -173,9 +174,17 @@ function IconCheck14() {
   );
 }
 
-function IconError14() {
+function IconError14({ className }: { className?: string }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn("shrink-0", className)}
+      aria-hidden
+    >
       <circle cx="12" cy="12" r="10" fill="#DC2626" />
       <line x1="12" y1="8" x2="12" y2="13" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
       <line x1="12" y1="16" x2="12.01" y2="16" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
@@ -213,19 +222,19 @@ export function ImportErrorClient() {
 
   return (
     <div className="mx-auto flex max-w-[1158px] flex-col gap-4">
-      <AllocationBreadcrumbs className="mb-0" items={allocationFlowCrumbs(state.customer, "error")} />
+      <AllocationBreadcrumbs className="mb-0" items={allocationImportPaperCrumbs(state.customer)} />
       <AllocationStepper className="mb-0" current={1} />
 
       <div className="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start">
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="flex flex-col rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-5 pb-5 pt-5">
+          <div className="flex flex-col rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 pb-4 pt-4">
             <div className="mb-1.5 text-[15px] font-normal leading-[1.125rem] text-[#111827]">Remittance Advice</div>
             <div className="mb-4 text-[13px] leading-4 text-[#6B7280]">
               Upload or paste the remittance document from the customer
             </div>
 
             <div className="mb-3.5 flex flex-wrap items-center gap-3 rounded-lg border border-solid border-[#D1D5DB] bg-[#F9FAFB] px-3.5 py-[11px]">
-              <div className="flex size-[34px] shrink-0 items-center justify-center rounded-lg bg-brand-subtle">
+              <div className="flex size-[34px] shrink-0 items-center justify-center rounded-lg bg-[#EEF2FF]">
                 <FileDocumentGlyph />
               </div>
               <div className="min-w-0 flex-1">
@@ -234,17 +243,23 @@ export function ImportErrorClient() {
               </div>
               <button
                 type="button"
-                className="shrink-0 rounded-[4px] border border-solid border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-solid border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
                 onClick={() => fileInputRef.current?.click()}
               >
+                <span className="inline-flex shrink-0" aria-hidden>
+                  <NavArrowLeft />
+                </span>
                 Replace
               </button>
               <button
                 type="button"
-                className="shrink-0 rounded-[4px] border border-solid border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-solid border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
                 onClick={() => router.push(`/allocation/import?customer=${q}`)}
               >
                 Re-parse Document
+                <span className="inline-flex shrink-0" aria-hidden>
+                  <NavArrowRight />
+                </span>
               </button>
               <input
                 ref={fileInputRef}
@@ -258,7 +273,7 @@ export function ImportErrorClient() {
               />
             </div>
 
-            <div className="flex items-start gap-2.5 rounded-lg border border-solid border-[#FDE68A] bg-[#FFFBEB] px-3.5 py-3">
+            <div className="mb-4 flex items-start gap-2.5 rounded-lg border border-solid border-[#FDE68A] bg-[#FFFBEB] px-3.5 py-3">
               <AmberWarningTriangle />
               <div className="min-w-0">
                 <p className="mb-0.5 text-[13.5px] font-semibold leading-[1.125rem] text-[#92400E]">
@@ -272,7 +287,7 @@ export function ImportErrorClient() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-[10px] border-[1.5px] border-solid border-[#FCA5A5] bg-white p-5">
+          <div className="flex flex-col gap-4 rounded-[10px] border-[1.5px] border-solid border-[#FCA5A5] bg-white p-4">
             <div className="flex flex-wrap items-center gap-2">
               <UnmatchedSectionHeaderIcon />
               <div className="text-[15px] font-normal leading-[1.125rem] text-[#111827]">Unmatched Items</div>
@@ -320,7 +335,7 @@ export function ImportErrorClient() {
                   <label className="mb-1.25 block text-xs font-medium text-[#374151]" htmlFor={`inv-${item.id}`}>
                     Match to invoice *
                   </label>
-                  <div className="flex flex-wrap items-start gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <MatchToInvoiceField
                       lineId={item.id}
                       value={invoiceById[item.id] ?? ""}
@@ -328,12 +343,15 @@ export function ImportErrorClient() {
                     />
                     <button
                       type="button"
-                      className="shrink-0 rounded-[4px] border border-solid border-[#D1D5DB] bg-white px-3 py-2 text-xs font-medium text-[#374151] hover:bg-[#F9FAFB]"
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-[7px] border border-solid border-[#D1D5DB] bg-white px-3 py-2 text-xs font-medium text-[#374151] hover:bg-[#F9FAFB]"
                       onClick={() => {
                         document.getElementById(`inv-${item.id}`)?.focus();
                       }}
                     >
                       Search invoices
+                      <span className="inline-flex shrink-0" aria-hidden>
+                        <NavArrowRight />
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -341,16 +359,19 @@ export function ImportErrorClient() {
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    className="text-xs font-medium text-brand underline decoration-1 underline-offset-2 hover:text-brand/90"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-[#4F46E5] hover:text-[#4338CA]"
                   >
-                    Skip this item
+                    <span className="underline decoration-1 [text-underline-position:from-font]">Skip this item</span>
+                    <span className="inline-flex shrink-0" aria-hidden>
+                      <NavArrowRight />
+                    </span>
                   </button>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white p-5">
+          <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 py-5">
             <div className="mb-4 text-[15px] font-semibold leading-[1.125rem] text-[#111827]">Payment Details</div>
             <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
               <PaymentField label="Payment Amount" emphasized>
@@ -363,7 +384,7 @@ export function ImportErrorClient() {
           </div>
         </div>
 
-        <div className="flex w-full shrink-0 flex-col gap-3 lg:w-[300px]">
+        <div className="flex w-full shrink-0 flex-col gap-3 lg:w-[382px]">
           <div className="flex flex-col rounded-[10px] border border-solid border-[#FDE68A] bg-[#FFFBEB] p-4">
             <div className="mb-1.5 flex items-center gap-2">
               <AmberWarningTriangle />
@@ -409,7 +430,7 @@ export function ImportErrorClient() {
               <div className="flex flex-col gap-1 border-b border-solid border-[#F9FAFB] py-2.5">
                 <div className="flex justify-between gap-4">
                   <div className="flex items-start gap-2">
-                    <IconError14 />
+                    <IconError14 className="mt-0.5" />
                     <div>
                       <div className="text-[13px] leading-4 text-[#9CA3AF]">ACM-Q1-089B</div>
                       <div className="text-[11px] leading-[0.875rem] text-[#DC2626]">No match found</div>
@@ -418,7 +439,7 @@ export function ImportErrorClient() {
                   <div className="text-[13px] leading-4 text-[#9CA3AF]">$7,200.00</div>
                 </div>
                 <div className="pl-[22px]">
-                  <span className="inline-block text-[11.5px] font-normal leading-[0.875rem] text-brand">
+                  <span className="inline-block text-[11.5px] font-normal leading-[0.875rem] text-[#4F46E5]">
                     Enter manually ↓
                   </span>
                 </div>
@@ -427,7 +448,7 @@ export function ImportErrorClient() {
               <div className="flex flex-col gap-1 py-2.5">
                 <div className="flex justify-between gap-4">
                   <div className="flex items-start gap-2">
-                    <IconError14 />
+                    <IconError14 className="mt-0.5" />
                     <div>
                       <div className="text-[13px] leading-4 text-[#9CA3AF]">WIRE REF: 20260301-NW</div>
                       <div className="text-[11px] leading-[0.875rem] text-[#DC2626]">No match found</div>
@@ -436,7 +457,7 @@ export function ImportErrorClient() {
                   <div className="text-[13px] leading-4 text-[#9CA3AF]">$3,650.00</div>
                 </div>
                 <div className="pl-[22px]">
-                  <span className="inline-block text-[11.5px] font-normal leading-[0.875rem] text-brand">
+                  <span className="inline-block text-[11.5px] font-normal leading-[0.875rem] text-[#4F46E5]">
                     Enter manually ↓
                   </span>
                 </div>
@@ -465,9 +486,10 @@ export function ImportErrorClient() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-center rounded-lg bg-[#E5E7EB] px-3.25 py-3.25 opacity-60">
-              <span className="text-sm font-normal leading-[1.125rem] text-[#6B7280]">
-                Continue to Funding Pool →
+            <div className="flex items-center justify-center gap-2 rounded-lg bg-[#E5E7EB] px-3.25 py-3.25 opacity-60">
+              <span className="text-sm font-normal leading-[1.125rem] text-[#6B7280]">Continue to Funding Pool</span>
+              <span className="inline-flex shrink-0 text-[#6B7280]" aria-hidden>
+                <NavArrowRight variant="muted" />
               </span>
             </div>
             <div className="flex items-center justify-center gap-1.5">

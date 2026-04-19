@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { toast } from "sonner";
 import {
   AllocationBreadcrumbs,
-  allocationReviewConfirmCrumbs,
+  allocationReviewPaperCrumbs,
 } from "@/components/allocations/AllocationBreadcrumbs";
 import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { getFundingPoolTotal, getTotalApplied, useAllocation } from "@/lib/allocation-store";
@@ -41,20 +41,21 @@ function WarningCircleIcon() {
   );
 }
 
+/** Paper JEY-0 — source chips: PYMT blue, credits purple; tight padding. */
 function SourcePills({ tokens }: { tokens: string[] }) {
   return (
     <div className="flex flex-wrap gap-1">
-      {tokens.map((t) =>
+      {tokens.map((t, i) =>
         t === "PYMT" ? (
           <span
-            key={t}
+            key={`pymt-${i}`}
             className="inline-block rounded-sm bg-[#DBEAFE] px-1.5 py-0.5 text-[11px] font-bold leading-[14px] text-[#1D4ED8]"
           >
             PYMT
           </span>
         ) : (
           <span
-            key={t}
+            key={`${t}-${i}`}
             className="inline-block rounded-sm bg-[#F3E8FF] px-1.5 py-0.5 text-[11px] font-bold leading-[14px] text-[#7C3AED]"
           >
             {t}
@@ -65,7 +66,16 @@ function SourcePills({ tokens }: { tokens: string[] }) {
   );
 }
 
-/** Paper MU-0 — Screen 5 Review & Confirm */
+/** “CR-4821 and CR-4819” for validation / post-submission copy. */
+function creditNamesSentence(creditList: { number: string }[]): string {
+  const nums = creditList.map((c) => c.number);
+  if (nums.length === 0) return "";
+  if (nums.length === 1) return nums[0];
+  if (nums.length === 2) return `${nums[0]} and ${nums[1]}`;
+  return `${nums.slice(0, -1).join(", ")} and ${nums[nums.length - 1]}`;
+}
+
+/** Paper JEY-0 — Screen 5 Review & Confirm */
 export function ReviewConfirmClient() {
   const router = useRouter();
   const { state, dispatch } = useAllocation();
@@ -95,6 +105,7 @@ export function ReviewConfirmClient() {
   const invoiceTotal = allInvoices.length;
   const selectedCredits = credits.filter((c) => state.selectedCreditIds.includes(c.id));
   const creditLabelsJoined = selectedCredits.map((c) => c.number).join(" + ");
+  const creditsCopy = creditNamesSentence(selectedCredits);
 
   const customerSummary = remittance
     ? `${remittance.accounts} accounts · ${remittance.paymentType} · ${remittance.date}`
@@ -110,29 +121,29 @@ export function ReviewConfirmClient() {
   }
 
   return (
-    <div className="mx-auto max-w-[1158px]">
-      <AllocationBreadcrumbs items={allocationReviewConfirmCrumbs(state.customer)} />
+    <div className="mx-auto max-w-[1158px] text-xs/4 antialiased">
+      <AllocationBreadcrumbs items={allocationReviewPaperCrumbs(state.customer)} variant="reviewFp" />
       <AllocationStepper current={4} hideActiveSuffix />
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <div className="min-w-0 flex-1 flex flex-col gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 py-3.5">
               <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#9CA3AF]">Customer</div>
-              <div className="text-[15px] font-bold leading-[18px] text-text-primary">{state.customer}</div>
+              <div className="text-[15px] font-bold leading-[18px] text-[#111827]">{state.customer}</div>
               <div className="mt-0.5 text-xs leading-4 text-[#9CA3AF]">{customerSummary}</div>
             </div>
             <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 py-3.5">
               <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#9CA3AF]">Total Applied</div>
-              <div className="text-[15px] font-bold leading-[18px] text-brand">{formatUsd(applied)}</div>
-              <div className="mt-0.5 text-xs font-medium leading-4 text-success">
+              <div className="text-[15px] font-bold leading-[18px] text-[#4F46E5]">{formatUsd(applied)}</div>
+              <div className="mt-0.5 text-xs font-medium leading-4 text-[#16A34A]">
                 {invoiceStats.full} {invoiceStats.full === 1 ? "invoice" : "invoices"} fully settled
               </div>
             </div>
             <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 py-3.5">
               <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#9CA3AF]">Funding Pool</div>
-              <div className="text-[15px] font-bold leading-[18px] text-text-primary">{formatUsd(poolTotal)}</div>
-              <div className="mt-0.5 text-xs font-medium leading-4 text-warning">
+              <div className="text-[15px] font-bold leading-[18px] text-[#111827]">{formatUsd(poolTotal)}</div>
+              <div className="mt-0.5 text-xs font-medium leading-4 text-[#F59E0B]">
                 {remainingOnAccount > EPS
                   ? `${formatUsd(remainingOnAccount)} remains on account`
                   : "Pool fully allocated"}
@@ -140,7 +151,7 @@ export function ReviewConfirmClient() {
             </div>
             <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-4 py-3.5">
               <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#9CA3AF]">Credits Used</div>
-              <div className="text-[15px] font-bold leading-[18px] text-text-primary">
+              <div className="text-[15px] font-bold leading-[18px] text-[#111827]">
                 {selectedCredits.length} of {credits.length}
               </div>
               <div className="mt-0.5 text-xs leading-4 text-[#9CA3AF]">
@@ -150,7 +161,7 @@ export function ReviewConfirmClient() {
           </div>
 
           <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white px-5 py-4.5">
-            <div className="mb-3.5 text-[15px] font-semibold leading-[18px] text-text-primary">Validation Checks</div>
+            <div className="mb-3.5 text-[15px] font-semibold leading-[18px] text-[#111827]">Validation Checks</div>
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-2.5">
                 <CheckCircleIcon />
@@ -164,7 +175,7 @@ export function ReviewConfirmClient() {
                 <div className="flex items-center gap-2.5">
                   <CheckCircleIcon />
                   <span className="text-[13.5px] leading-[18px] text-[#374151]">
-                    Credits {creditLabelsJoined} are valid and unallocated
+                    Credits {creditsCopy} are valid and unallocated
                   </span>
                 </div>
               ) : (
@@ -186,7 +197,7 @@ export function ReviewConfirmClient() {
                 <span className="text-[13.5px] leading-[18px] text-[#374151]">No duplicate allocations detected</span>
               </div>
               {remainingOnAccount > EPS ? (
-                <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex items-center gap-2.5">
                   <WarningCircleIcon />
                   <span className="min-w-0 flex-1 text-[13.5px] leading-[18px] text-[#374151]">
                     Remaining {formatUsd(remainingOnAccount)} will stay as unallocated balance on account
@@ -204,7 +215,7 @@ export function ReviewConfirmClient() {
 
           <div className="overflow-hidden rounded-[10px] border border-solid border-[#E5E7EB] bg-white">
             <div className="border-b border-solid border-[#F3F4F6] px-5 py-3.5">
-              <div className="text-[15px] font-semibold leading-[18px] text-text-primary">Allocation Breakdown</div>
+              <div className="text-[15px] font-semibold leading-[18px] text-[#111827]">Allocation Breakdown</div>
             </div>
             <div className="overflow-x-auto">
               <div className="min-w-[640px]">
@@ -215,38 +226,38 @@ export function ReviewConfirmClient() {
                   <div className="text-right text-[11px] font-semibold uppercase tracking-[0.04em] text-[#9CA3AF]">Applied</div>
                 </div>
                 {allInvoices.map((inv, i) => {
-              const rowApplied = state.appliedAmounts[inv.id] ?? 0;
-              const isLast = i === allInvoices.length - 1;
-              return (
-                <div
-                  key={inv.id}
-                  className={cn(
-                    "grid grid-cols-4 items-center px-5 py-3",
-                    !isLast && "border-b border-solid border-[#F9FAFB]",
-                  )}
-                >
-                  <div className="text-[13.5px] font-medium leading-[18px] text-text-primary">{inv.number}</div>
-                  <div className="text-[13px] leading-4 text-[#6B7280]">{inv.account}</div>
-                  <div className="min-w-0">
-                    <SourcePills tokens={inv.source} />
-                  </div>
-                  <div className="text-right text-[13.5px] font-semibold leading-[18px] text-text-primary">
-                    {formatUsd(rowApplied)}
-                  </div>
-                </div>
-              );
+                  const rowApplied = state.appliedAmounts[inv.id] ?? 0;
+                  const isLast = i === allInvoices.length - 1;
+                  return (
+                    <div
+                      key={inv.id}
+                      className={cn(
+                        "grid grid-cols-4 items-center px-5 py-3",
+                        !isLast && "border-b border-solid border-[#F9FAFB]",
+                      )}
+                    >
+                      <div className="text-[13.5px] font-medium leading-[18px] text-[#111827]">{inv.number}</div>
+                      <div className="text-[13px] leading-4 text-[#6B7280]">{inv.account}</div>
+                      <div className="min-w-0">
+                        <SourcePills tokens={inv.source} />
+                      </div>
+                      <div className="text-right text-[13.5px] font-semibold leading-[18px] text-[#111827]">
+                        {formatUsd(rowApplied)}
+                      </div>
+                    </div>
+                  );
                 })}
               </div>
             </div>
           </div>
         </div>
 
-        <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-[280px]">
+        <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-[338px]">
           <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white p-4">
-            <div className="mb-3 text-[13.5px] font-semibold leading-[18px] text-text-primary">Post-Submission</div>
+            <div className="mb-3 text-[13.5px] font-semibold leading-[18px] text-[#111827]">Post-Submission</div>
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-2">
-                <span className="mt-px shrink-0 text-[13px] text-success" aria-hidden>
+                <span className="mt-px shrink-0 text-[13px] text-[#16A34A]" aria-hidden>
                   ✓
                 </span>
                 <span className="text-[12.5px] leading-4 text-[#374151]">
@@ -254,7 +265,7 @@ export function ReviewConfirmClient() {
                 </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="mt-px shrink-0 text-[13px] text-brand" aria-hidden>
+                <span className="mt-px shrink-0 text-[13px] text-[#4F46E5]" aria-hidden>
                   ◉
                 </span>
                 <span className="text-[12.5px] leading-4 text-[#374151]">
@@ -263,17 +274,17 @@ export function ReviewConfirmClient() {
               </div>
               {selectedCredits.length > 0 ? (
                 <div className="flex items-start gap-2">
-                  <span className="mt-px shrink-0 text-[13px] text-success" aria-hidden>
+                  <span className="mt-px shrink-0 text-[13px] text-[#16A34A]" aria-hidden>
                     ✓
                   </span>
                   <span className="text-[12.5px] leading-4 text-[#374151]">
-                    Credits {creditLabelsJoined} will be marked as used
+                    Credits {creditsCopy} will be marked as used
                   </span>
                 </div>
               ) : null}
               {remainingOnAccount > EPS ? (
                 <div className="flex items-start gap-2">
-                  <span className="mt-px shrink-0 text-[13px] text-warning" aria-hidden>
+                  <span className="mt-px shrink-0 text-[13px] text-[#F59E0B]" aria-hidden>
                     →
                   </span>
                   <span className="text-[12.5px] leading-4 text-[#374151]">
@@ -282,6 +293,13 @@ export function ReviewConfirmClient() {
                 </div>
               ) : null}
             </div>
+          </div>
+
+          <div className="rounded-lg border border-solid border-[#E5E7EB] bg-white p-4">
+            <div className="mb-2 text-[13px] font-semibold text-[#111827]">Audit</div>
+            <p className="whitespace-pre-wrap text-[11px] leading-[160%] text-[#6B7280]">
+              Session ALC-2048 · Operator Sarah M.{"\n"}Idempotent post · Ledger entries generated on commit.
+            </p>
           </div>
 
           <div className="rounded-[10px] border border-solid border-[#E5E7EB] bg-white p-4">
@@ -302,20 +320,20 @@ export function ReviewConfirmClient() {
               </svg>
               <span className="text-[13.5px] font-semibold leading-[18px] text-[#166534]">Ready to submit</span>
             </div>
-            <div className="mb-3.5 text-xs leading-4 text-success">
+            <div className="mb-3.5 text-xs leading-4 text-[#16A34A]">
               All checks passed · {invoiceTotal} invoices · {formatUsd(applied)}
             </div>
             <div className="flex flex-col gap-2">
               <button
                 type="button"
                 onClick={confirm}
-                className="flex w-full flex-col items-center justify-center gap-[13px] rounded-lg bg-[#4F46E5] px-[13px] py-[13px] text-center text-sm font-medium leading-[18px] text-white antialiased hover:bg-[#4338CA]"
+                className="flex w-full flex-col items-center justify-center rounded-sm bg-[#4F46E5] px-[13px] py-[13px] text-center text-sm font-medium leading-[18px] text-white antialiased hover:bg-[#4338CA]"
               >
                 Confirm & Submit Allocation
               </button>
               <Link
                 href="/allocation/apply"
-                className="flex w-full flex-col items-center justify-center gap-[13px] self-stretch rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] antialiased hover:bg-brand-subtle"
+                className="flex w-full flex-col items-center justify-center rounded-sm border border-solid border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-4 text-[#4F46E5] antialiased hover:bg-[#EEF2FF]"
               >
                 ← Edit Allocations
               </Link>

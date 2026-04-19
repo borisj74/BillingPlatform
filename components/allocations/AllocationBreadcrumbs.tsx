@@ -30,6 +30,8 @@ export interface AllocationBreadcrumbsProps {
   className?: string;
   /** Paper 2UT-0 — SLA pill after the last crumb. */
   slaBadge?: string;
+  /** Paper FP-0 — `Payments / … / Funding Pool / Invoices` (ellipsis hides middle segments). */
+  variant?: "default" | "applyFp" | "reviewFp";
 }
 
 const crumbLinkClass =
@@ -176,10 +178,32 @@ export function allocationFlowCrumbs(
   ];
 }
 
+/** Paper IX3-0 — Import remittance screens (Payments → … → New Allocation); no Accounts prefix. */
+export function allocationImportPaperCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+  ];
+}
+
 export function allocationApplyInvoicesCrumbs(customer: string): Crumb[] {
   const q = encodeURIComponent(customer);
   return [
     { label: "Accounts", href: "/accounts" },
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: "Funding Pool", href: "/allocation/funding" },
+    { label: "Invoices" },
+  ];
+}
+
+/** Paper FP-0 — Apply to Invoices (no Accounts prefix; ellipsis before Funding Pool). */
+export function allocationApplyPaperCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
     { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
@@ -201,6 +225,30 @@ export function allocationReviewConfirmCrumbs(customer: string): Crumb[] {
   ];
 }
 
+/** Paper JEY-0 — Review & Confirm: `Payments / … / Invoices / Confirmation` (no Accounts). */
+export function allocationReviewPaperCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: "Funding Pool", href: "/allocation/funding" },
+    { label: "Invoices", href: "/allocation/apply" },
+    { label: "Confirmation" },
+  ];
+}
+
+/** Paper 9Y-0 — Build Funding Pool (no Accounts prefix; matches import flow IA). */
+export function allocationFundingPaperCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: "Funding Pool" },
+  ];
+}
+
 /** Hub at /accounts — three segments; all visible (no ellipsis). */
 export function hubPaymentAllocationsCrumbs(): Crumb[] {
   return [
@@ -210,8 +258,17 @@ export function hubPaymentAllocationsCrumbs(): Crumb[] {
   ];
 }
 
-export function AllocationBreadcrumbs({ items, className, slaBadge }: AllocationBreadcrumbsProps) {
+export function AllocationBreadcrumbs({
+  items,
+  className,
+  slaBadge,
+  variant = "default",
+}: AllocationBreadcrumbsProps) {
   if (items.length === 0) return null;
+
+  const applyFp = variant === "applyFp" && items.length === 5;
+  /** Payments / … / Invoices / Confirmation */
+  const reviewFp = variant === "reviewFp" && items.length === 6;
 
   return (
     <nav
@@ -219,7 +276,43 @@ export function AllocationBreadcrumbs({ items, className, slaBadge }: Allocation
       className={cn("mb-3.5 flex flex-wrap items-center gap-1.5 text-[13px] leading-4", className)}
     >
       <ol className="flex flex-wrap items-center gap-1.5">
-        {items.length <= 4 ? (
+        {applyFp ? (
+          <>
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[0]} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <EllipsisMenu items={items.slice(1, -2)} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[3]} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[4]} current />
+            </li>
+          </>
+        ) : reviewFp ? (
+          <>
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[0]} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <EllipsisMenu items={items.slice(1, -2)} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[4]} />
+            </li>
+            {separator}
+            <li className="flex items-center gap-1.5">
+              <CrumbLinkOrText item={items[5]} current />
+            </li>
+          </>
+        ) : items.length <= 4 ? (
           items.map((item, i) => (
             <Fragment key={`${item.label}-${i}`}>
               {i > 0 ? separator : null}
