@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { BillingLogoMark } from "@/components/layout/paper-sidebar/BillingLogoMark";
 import { CopilotMark } from "@/components/layout/paper-sidebar/CopilotMark";
@@ -40,8 +40,17 @@ function paymentsActive(pathname: string) {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [accountsOpen, setAccountsOpen] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+
+  /** Paper 1-0 vs 5A5-0: `?nav=closed` matches slim rail; default open rail is 5A5-0. */
+  useEffect(() => {
+    if (pathname !== "/accounts") return;
+    const n = searchParams.get("nav");
+    if (n === "closed") setCollapsed(true);
+    else setCollapsed(false);
+  }, [pathname, searchParams]);
 
   const payActive = paymentsActive(pathname);
 
