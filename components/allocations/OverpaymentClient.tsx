@@ -6,7 +6,7 @@ import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 
 export function OverpaymentClient() {
   return (
-    <div className="flex flex-col gap-[14px] overflow-clip px-4 pb-5 pt-5 antialiased">
+    <div className="flex flex-col gap-[14px] overflow-clip pb-5 pt-5 antialiased">
       <div className="flex items-center gap-[5px]">
         <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">Payments</span>
         <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">/</span>

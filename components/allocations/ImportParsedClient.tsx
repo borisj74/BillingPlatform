@@ -92,7 +92,7 @@ export function ImportParsedClient() {
   const customerQ = encodeURIComponent(state.customer);
 
   return (
-    <div className="mx-auto flex max-w-[1158px] flex-col gap-4 text-xs/4 antialiased">
+    <div className="flex w-full flex-col gap-4 text-xs/4 antialiased">
       <AllocationBreadcrumbs className="mb-0" items={allocationImportPaperCrumbs(state.customer)} />
       <AllocationStepper className="mb-0" current={1} hideActiveSuffix />
 

@@ -86,7 +86,7 @@ export function FundingPoolBuilder() {
   }
 
   return (
-    <div className="mx-auto max-w-[1158px] text-xs/4 antialiased">
+    <div className="w-full text-xs/4 antialiased">
       <AllocationBreadcrumbs className="mb-3.5" items={allocationFundingPaperCrumbs(state.customer)} />
       <AllocationStepper className="mb-5" current={2} />
 

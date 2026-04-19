@@ -143,7 +143,7 @@ export function ApplyInvoicesClient() {
   }, [state]);
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="w-full">
       <AllocationBreadcrumbs items={allocationApplyPaperCrumbs(state.customer)} variant="applyFp" />
       <AllocationStepper current={3} hideActiveSuffix />
 

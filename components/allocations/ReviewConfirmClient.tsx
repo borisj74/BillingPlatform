@@ -121,7 +121,7 @@ export function ReviewConfirmClient() {
   }
 
   return (
-    <div className="mx-auto max-w-[1158px] text-xs/4 antialiased">
+    <div className="w-full text-xs/4 antialiased">
       <AllocationBreadcrumbs items={allocationReviewPaperCrumbs(state.customer)} variant="reviewFp" />
       <AllocationStepper current={4} hideActiveSuffix />
 

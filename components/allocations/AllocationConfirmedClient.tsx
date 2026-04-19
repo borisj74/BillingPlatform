@@ -10,7 +10,7 @@ export function AllocationConfirmedClient() {
   const confirmationRef = searchParams.get("confirmation") ?? "PA-20481";
 
   return (
-    <div className="-mx-4 flex min-h-[calc(100dvh-10rem)] flex-col items-center justify-center bg-white px-4 py-12 antialiased md:-mx-8">
+    <div className="flex min-h-[calc(100dvh-10rem)] flex-col items-center justify-center bg-white py-12 antialiased">
       <div className="flex w-full max-w-[440px] shrink-0 flex-col items-center gap-4 rounded-xl border border-solid border-[#E5E7EB] bg-white px-10 pb-9 pt-10 shadow-[0_4px_24px_-4px_rgba(17,24,39,0.08)]">
         <div className="mb-1 flex shrink-0 items-center justify-center">
           <div

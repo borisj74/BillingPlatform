@@ -52,7 +52,7 @@ export function RemittanceHub() {
   const hubRows = remittances.slice(0, HUB_TABLE_ROW_COUNT);
 
   return (
-    <div className="mx-auto max-w-[1344px]">
+    <div className="w-full">
       <AllocationBreadcrumbs items={hubPaymentAllocationsCrumbs()} />
 
       <AllocationAiBanner />

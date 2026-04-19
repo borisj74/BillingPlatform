@@ -156,7 +156,7 @@ export function ImportRemittanceClient() {
   }
 
   return (
-    <div className="mx-auto flex max-w-[1158px] flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <AllocationBreadcrumbs className="mb-0" items={allocationImportPaperCrumbs(titleCustomer)} />
       <AllocationStepper className="mb-0" current={1} hideActiveSuffix />
 

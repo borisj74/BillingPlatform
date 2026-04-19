@@ -66,7 +66,7 @@ export function ManualFundingPool() {
   const progressPct = Math.min(100, (reviewActioned.size / MANUAL_REVIEW_TOTAL) * 100);
 
   return (
-    <div className="mx-auto max-w-[1158px] text-xs/4 antialiased">
+    <div className="w-full text-xs/4 antialiased">
       <AllocationBreadcrumbs
         className="mb-3.5"
         items={allocationFundingPaperCrumbs(MANUAL_SCENARIO_CUSTOMER)}

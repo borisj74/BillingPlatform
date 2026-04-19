@@ -131,7 +131,7 @@ const SECTIONS: { id: string; title: string; subtitle?: string; items: FlowLink[
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 md:py-10">
+    <div className="w-full py-8 md:py-10">
       <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-6 md:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">
           Billing Platform prototype
