@@ -10,7 +10,11 @@ import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { RemittanceFormatBadges } from "@/components/allocations/RemittanceFormatBadges";
 import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 import { useAllocation } from "@/lib/allocation-store";
-import { detectRemittanceFormatFromFileName, isRemittanceFormatId } from "@/lib/remittance-format";
+import {
+  detectRemittanceFormatFromFileName,
+  isRemittanceFormatId,
+  type RemittanceFormatId,
+} from "@/lib/remittance-format";
 import { cn } from "@/lib/utils";
 
 /** Paper IUS-0 / IUX-0 — PDF. Paper J43-0 / J48-0 — EDI 820. */
@@ -71,6 +75,12 @@ export function ImportParsedClient() {
   const searchParams = useSearchParams();
   const { state } = useAllocation();
   const formatParam = searchParams.get("format");
+
+  function selectFormat(id: RemittanceFormatId) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("format", id);
+    router.replace(`/allocation/import/parsed?${params.toString()}`, { scroll: false });
+  }
   const formatActive = isRemittanceFormatId(formatParam)
     ? formatParam
     : detectRemittanceFormatFromFileName(state.remittanceFileName ?? "remittance_acme_apr.pdf");
@@ -91,7 +101,8 @@ export function ImportParsedClient() {
       <div className="flex flex-col items-stretch self-stretch">
         <RemittanceFormatBadges
           activeId={formatActive}
-          aria-label="Import format for this remittance"
+          onSelect={selectFormat}
+          aria-label="Remittance source format"
         />
 
         <div className="mb-4 flex flex-col gap-4 lg:flex-row">
