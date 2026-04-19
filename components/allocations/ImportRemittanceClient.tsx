@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   AllocationBreadcrumbs,
@@ -11,7 +11,7 @@ import { RemittanceFormatBadges } from "@/components/allocations/RemittanceForma
 import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 import { Textarea } from "@/components/ui/textarea";
 import { useAllocation } from "@/lib/allocation-store";
-import { detectRemittanceFormatFromInput, type RemittanceFormatId } from "@/lib/remittance-format";
+import { detectRemittanceFormatFromInput, isRemittanceFormatId, type RemittanceFormatId } from "@/lib/remittance-format";
 import { cn } from "@/lib/utils";
 
 /** Paper J43-0 — Raw EDI 820 source block (Courier, dark panel). */
@@ -111,11 +111,17 @@ export function ImportRemittanceClient() {
   const { state, dispatch } = useAllocation();
   const [dragOver, setDragOver] = useState(false);
   const [pasteText, setPasteText] = useState("");
-  /** Paper J43-0 — default to EDI 820 selected. */
-  const [selectedFormat, setSelectedFormat] = useState<RemittanceFormatId>("edi");
-
   const customerParam = searchParams.get("customer");
+  const formatParam = searchParams.get("format");
   const titleCustomer = customerParam ?? state.customer;
+
+  /** Derived from `?format=`, uploaded file / paste, or Paper J43-0 default (EDI). Badges only reflect this — they are not controls. */
+  const selectedFormat = useMemo((): RemittanceFormatId => {
+    if (isRemittanceFormatId(formatParam)) return formatParam;
+    const d = detectRemittanceFormatFromInput(state.remittanceFileName, pasteText);
+    if (d) return d;
+    return "edi";
+  }, [formatParam, state.remittanceFileName, pasteText]);
 
   useEffect(() => {
     if (customerParam) {
@@ -126,10 +132,8 @@ export function ImportRemittanceClient() {
   const onFilePick = useCallback(
     (name: string) => {
       dispatch({ type: "SET_FILE", payload: name });
-      const d = detectRemittanceFormatFromInput(name, pasteText);
-      if (d) setSelectedFormat(d);
     },
-    [dispatch, pasteText],
+    [dispatch],
   );
 
   function continueToParsed() {
@@ -159,8 +163,7 @@ export function ImportRemittanceClient() {
       <div className="flex flex-col gap-4 text-xs/4 antialiased">
         <RemittanceFormatBadges
           activeId={selectedFormat}
-          onSelect={setSelectedFormat}
-          aria-label="Remittance source format"
+          aria-label="Remittance source formats shown for this import."
         />
 
         {selectedFormat === "edi" ? (
