@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -69,8 +70,15 @@ function ExtractedRow({
 export function ImportParsedClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { state } = useAllocation();
+  const { state, dispatch } = useAllocation();
+  const customerParam = searchParams.get("customer");
   const formatParam = searchParams.get("format");
+
+  useEffect(() => {
+    if (customerParam) {
+      dispatch({ type: "SET_CUSTOMER", payload: customerParam });
+    }
+  }, [customerParam, dispatch]);
   const formatActive = isRemittanceFormatId(formatParam)
     ? formatParam
     : detectRemittanceFormatFromFileName(state.remittanceFileName ?? "remittance_acme_apr.pdf");

@@ -166,7 +166,7 @@ export function RemittanceHub() {
                       </Link>
                     ) : (
                       <Link
-                        href={`/allocation/import?customer=${encodeURIComponent(r.customer)}`}
+                        href={`/allocation/import/parsed?format=pdf&customer=${encodeURIComponent(r.customer)}`}
                         className={cn(
                           buttonVariants({ variant: "outline", size: "sm" }),
                           "rounded-[4px] border-brand font-semibold text-brand hover:bg-brand-subtle hover:text-brand",

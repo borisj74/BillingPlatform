@@ -149,7 +149,7 @@ export default function HomePage() {
         </p>
 
         <Link
-          href="/allocation/import?customer=Acme%20Corp"
+          href="/allocation/import/parsed?format=pdf&customer=Acme%20Corp"
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
             "mt-6 inline-flex items-center gap-2 bg-brand text-white hover:bg-brand/90",
