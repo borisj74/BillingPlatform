@@ -79,7 +79,11 @@ export function RemittanceAdviceFileCard({
           <button
             type="button"
             className="shrink-0 rounded-[4px] border border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
-            onClick={() => router.push(`/allocation/import?customer=${encodeURIComponent(customerQuery)}`)}
+            onClick={() =>
+              router.push(
+                `/allocation/import?format=pdf&customer=${encodeURIComponent(customerQuery)}`,
+              )
+            }
           >
             Re-parse Document
           </button>

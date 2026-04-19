@@ -32,28 +32,28 @@ const SECTIONS: { id: string; title: string; subtitle?: string; items: FlowLink[
   {
     id: "import",
     title: "B · New allocation — Import remittance",
-    subtitle: "Open the PDF parsed review first; earlier upload states live on the import route (tabs).",
+    subtitle: "Browse PDF upload first → parsed review → EDI 820 is the third format in the tray.",
     items: [
       {
-        href: "/allocation/import/parsed?format=pdf",
-        label: "S2 — Import · Parsed (PDF success)",
-        paper: "58-0 · IUS-0",
-        note: "Parse success banner + split review after continue (PDF path).",
-      },
-      {
-        href: "/allocation/import?customer=Acme%20Corp",
-        label: "Screens 2-1 & 2-2 — Import (early states)",
+        href: "/allocation/import?format=pdf&customer=Acme%20Corp",
+        label: "S2a — Import · Browse / upload (PDF)",
         paper: "MVG-1 · IUS-0",
-        note: "Format tray + upload / source panels (PDF vs other sources).",
+        note: "Format tray + upload zone + preview (first screen from Browse Allocation).",
       },
       {
-        href: "/allocation/import?customer=Acme%20Corp",
-        label: "Screen 2-3 — EDI 820 parsed view",
+        href: "/allocation/import/parsed?format=pdf&customer=Acme%20Corp",
+        label: "S2b — Import · Parsed (PDF success)",
+        paper: "58-0 · IUS-0",
+        note: "OCR + extracted fields after Continue (second screen).",
+      },
+      {
+        href: "/allocation/import?format=edi&customer=Acme%20Corp",
+        label: "S2c — Import · EDI 820 source",
         paper: "J43-0",
-        note: "Default to EDI tab: raw X12 + extracted payment details.",
+        note: "Third format in the tray: raw X12 + extracted payment details on the import route.",
       },
       {
-        href: "/allocation/import/parsed?format=edi",
+        href: "/allocation/import/parsed?format=edi&customer=Acme%20Corp",
         label: "S2 — Import · Parsed (EDI success)",
         paper: "58-0",
         note: "Parse success banner + split review (EDI 820 path).",
@@ -149,13 +149,13 @@ export default function HomePage() {
         </p>
 
         <Link
-          href="/allocation/import/parsed?format=pdf&customer=Acme%20Corp"
+          href="/allocation/import?format=pdf&customer=Acme%20Corp"
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
             "mt-6 inline-flex items-center gap-2 bg-brand text-white hover:bg-brand/90",
           )}
         >
-          <span>Start at Payment Allocations</span>
+          <span>Browse allocation (Acme)</span>
           <NavArrowRight variant="onPrimary" />
         </Link>
       </div>

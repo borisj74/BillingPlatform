@@ -115,12 +115,12 @@ export function ImportRemittanceClient() {
   const formatParam = searchParams.get("format");
   const titleCustomer = customerParam ?? state.customer;
 
-  /** Derived from `?format=`, uploaded file / paste, or Paper J43-0 default (EDI). Badges only reflect this — they are not controls. */
+  /** Derived from `?format=`, uploaded file / paste, or PDF browse default. Badges only reflect this — they are not controls. */
   const selectedFormat = useMemo((): RemittanceFormatId => {
     if (isRemittanceFormatId(formatParam)) return formatParam;
     const d = detectRemittanceFormatFromInput(state.remittanceFileName, pasteText);
     if (d) return d;
-    return "edi";
+    return "pdf";
   }, [formatParam, state.remittanceFileName, pasteText]);
 
   useEffect(() => {
@@ -149,7 +149,9 @@ export function ImportRemittanceClient() {
     dispatch({ type: "SET_PARSE_STATE", payload: "parsed" });
     const fmt = detectRemittanceFormatFromInput(effectiveFileName, pasteText) ?? selectedFormat;
     dispatch({ type: "SET_REMITTANCE_FORMAT", payload: fmt });
-    router.push(`/allocation/import/parsed?format=${fmt}`);
+    router.push(
+      `/allocation/import/parsed?format=${fmt}&customer=${encodeURIComponent(state.customer)}`,
+    );
   }
 
   function goError() {
@@ -157,7 +159,7 @@ export function ImportRemittanceClient() {
       dispatch({ type: "SET_FILE", payload: "remittance-sample.csv" });
     }
     dispatch({ type: "SET_PARSE_STATE", payload: "error" });
-    router.push("/allocation/import/error");
+    router.push(`/allocation/import/error?customer=${encodeURIComponent(state.customer)}`);
   }
 
   return (

@@ -1,16 +1,17 @@
 /** Shared remittance source labels for import / parsed prototype screens. */
 
+/** Tray order: PDF first (browse/upload), then CSV, then EDI 820 third — matches prototype walkthrough. */
 export const REMITTANCE_FORMAT_OPTIONS = [
   { id: "pdf" as const, label: "PDF / Scanned" },
-  { id: "edi" as const, label: "EDI 820" },
   { id: "csv" as const, label: "CSV / Excel" },
+  { id: "edi" as const, label: "EDI 820" },
   { id: "email" as const, label: "Email body" },
   { id: "paste" as const, label: "Paste text" },
 ] as const;
 
 export type RemittanceFormatId = (typeof REMITTANCE_FORMAT_OPTIONS)[number]["id"];
 
-const FORMAT_IDS: RemittanceFormatId[] = ["pdf", "edi", "csv", "email", "paste"];
+const FORMAT_IDS: RemittanceFormatId[] = ["pdf", "csv", "edi", "email", "paste"];
 
 export function isRemittanceFormatId(value: string | null): value is RemittanceFormatId {
   return value != null && FORMAT_IDS.includes(value as RemittanceFormatId);

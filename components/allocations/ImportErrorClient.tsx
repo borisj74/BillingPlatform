@@ -254,7 +254,7 @@ export function ImportErrorClient() {
               <button
                 type="button"
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-solid border-[#D1D5DB] bg-white px-2.5 py-1.25 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
-                onClick={() => router.push(`/allocation/import?customer=${q}`)}
+                onClick={() => router.push(`/allocation/import?format=pdf&customer=${q}`)}
               >
                 Re-parse Document
                 <span className="inline-flex shrink-0" aria-hidden>
