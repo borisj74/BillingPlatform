@@ -173,7 +173,7 @@ export function allocationFlowCrumbs(
     { label: "Accounts", href: "/accounts" },
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: PAGE_LABEL[page] },
   ];
 }
@@ -184,7 +184,7 @@ export function allocationImportPaperCrumbs(customer: string): Crumb[] {
   return [
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
   ];
 }
 
@@ -194,7 +194,7 @@ export function allocationApplyInvoicesCrumbs(customer: string): Crumb[] {
     { label: "Accounts", href: "/accounts" },
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: "Funding Pool", href: "/allocation/funding" },
     { label: "Invoices" },
   ];
@@ -206,7 +206,7 @@ export function allocationApplyPaperCrumbs(customer: string): Crumb[] {
   return [
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: "Funding Pool", href: "/allocation/funding" },
     { label: "Invoices" },
   ];
@@ -218,7 +218,7 @@ export function allocationReviewConfirmCrumbs(customer: string): Crumb[] {
     { label: "Accounts", href: "/accounts" },
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: "Funding Pool", href: "/allocation/funding" },
     { label: "Invoices", href: "/allocation/apply" },
     { label: "Confirmation" },
@@ -231,7 +231,7 @@ export function allocationReviewPaperCrumbs(customer: string): Crumb[] {
   return [
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: "Funding Pool", href: "/allocation/funding" },
     { label: "Invoices", href: "/allocation/apply" },
     { label: "Confirmation" },
@@ -244,7 +244,7 @@ export function allocationFundingPaperCrumbs(customer: string): Crumb[] {
   return [
     { label: "Payments", href: "/accounts" },
     { label: "Payment Allocations", href: "/accounts" },
-    { label: `New Allocation — ${customer}`, href: `/allocation/import?customer=${q}` },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import/parsed?format=pdf&customer=${q}` },
     { label: "Funding Pool" },
   ];
 }
