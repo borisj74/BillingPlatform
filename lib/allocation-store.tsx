@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useReducer } from "react";
+import type { RemittanceFormatId } from "./remittance-format";
 import { credits as allCredits, invoices as allInvoices } from "./mock-data";
 
 export interface FundingPoolItem {
@@ -14,6 +15,8 @@ export interface FundingPoolItem {
 export interface AllocationState {
   step: 1 | 2 | 3 | 4;
   customer: string;
+  /** Active remittance source for import / parsed / back navigation (query + deep links). */
+  remittanceFormat: RemittanceFormatId;
   remittanceFileName: string | null;
   parseState: "idle" | "parsed" | "error";
   selectedCreditIds: string[];
@@ -26,6 +29,7 @@ export interface AllocationState {
 const initialState: AllocationState = {
   step: 1,
   customer: "Acme Corp",
+  remittanceFormat: "pdf",
   remittanceFileName: null,
   parseState: "idle",
   selectedCreditIds: ["c1", "c2"],
@@ -47,6 +51,7 @@ const initialState: AllocationState = {
 
 type Action =
   | { type: "SET_CUSTOMER"; payload: string }
+  | { type: "SET_REMITTANCE_FORMAT"; payload: RemittanceFormatId }
   | { type: "SET_PARSE_STATE"; payload: "idle" | "parsed" | "error" }
   | { type: "SET_FILE"; payload: string }
   | { type: "TOGGLE_CREDIT"; payload: string }
@@ -64,6 +69,8 @@ function reducer(state: AllocationState, action: Action): AllocationState {
   switch (action.type) {
     case "SET_CUSTOMER":
       return { ...state, customer: action.payload };
+    case "SET_REMITTANCE_FORMAT":
+      return { ...state, remittanceFormat: action.payload };
     case "SET_PARSE_STATE":
       return { ...state, parseState: action.payload };
     case "SET_FILE":

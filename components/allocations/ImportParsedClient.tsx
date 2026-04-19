@@ -82,6 +82,10 @@ export function ImportParsedClient() {
   const formatActive = isRemittanceFormatId(formatParam)
     ? formatParam
     : detectRemittanceFormatFromFileName(state.remittanceFileName ?? "remittance_acme_apr.pdf");
+
+  useEffect(() => {
+    dispatch({ type: "SET_REMITTANCE_FORMAT", payload: formatActive });
+  }, [formatActive, dispatch]);
   const fileName =
     state.remittanceFileName ??
     (formatActive === "edi" ? "remittance_northwind_820.edi" : "remittance_acme_apr.pdf");
@@ -256,7 +260,9 @@ export function ImportParsedClient() {
           <div className="flex w-full shrink-0 items-stretch gap-2 sm:w-auto">
             <button
               type="button"
-              onClick={() => router.push(`/allocation/import?customer=${customerQ}`)}
+              onClick={() =>
+                router.push(`/allocation/import?customer=${customerQ}&format=${formatActive}`)
+              }
               className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-sm border border-brand px-3 py-3 text-[13px] font-medium leading-4 text-brand sm:flex-initial sm:min-w-[10rem]"
             >
               <NavArrowLeft />

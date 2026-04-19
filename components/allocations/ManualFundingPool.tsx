@@ -17,6 +17,7 @@ import {
   manualHighConfidenceCredits,
   manualScenarioCheckPayment,
 } from "@/lib/manual-funding-mock";
+import { useAllocation } from "@/lib/allocation-store";
 import { formatUsd } from "@/lib/format";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScopedAccountSearch } from "@/components/allocations/ScopedAccountSearch";
@@ -44,6 +45,7 @@ function creditShort(line: string): string {
 const SIDEBAR_CREDIT_ORDER = ["hc1", "hc2", "hc3", "hc4"] as const;
 
 export function ManualFundingPool() {
+  const { state } = useAllocation();
   const hcById = useMemo(() => Object.fromEntries(manualHighConfidenceCredits.map((c) => [c.id, c])), []);
 
   const hcConfidenceMinMax = useMemo(() => {
@@ -529,7 +531,7 @@ export function ManualFundingPool() {
               <NavArrowRight variant="onPrimary" />
             </Link>
             <Link
-              href="/allocation/import/parsed"
+              href={`/allocation/import/parsed?format=${state.remittanceFormat}&customer=${encodeURIComponent(MANUAL_SCENARIO_CUSTOMER)}`}
               className="flex w-full items-center justify-center gap-1 rounded-sm border border-[#4F46E5] bg-white px-[13px] py-[13px] text-[13px] font-medium text-[#4F46E5] hover:bg-[#EEF2FF]"
             >
               <NavArrowLeft />

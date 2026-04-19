@@ -124,6 +124,10 @@ export function ImportRemittanceClient() {
   }, [formatParam, state.remittanceFileName, pasteText]);
 
   useEffect(() => {
+    dispatch({ type: "SET_REMITTANCE_FORMAT", payload: selectedFormat });
+  }, [selectedFormat, dispatch]);
+
+  useEffect(() => {
     if (customerParam) {
       dispatch({ type: "SET_CUSTOMER", payload: customerParam });
     }
@@ -144,6 +148,7 @@ export function ImportRemittanceClient() {
     }
     dispatch({ type: "SET_PARSE_STATE", payload: "parsed" });
     const fmt = detectRemittanceFormatFromInput(effectiveFileName, pasteText) ?? selectedFormat;
+    dispatch({ type: "SET_REMITTANCE_FORMAT", payload: fmt });
     router.push(`/allocation/import/parsed?format=${fmt}`);
   }
 

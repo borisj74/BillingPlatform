@@ -355,7 +355,7 @@ export function FundingPoolBuilder() {
               <NavArrowRight variant="onPrimary" />
             </Link>
             <Link
-              href="/allocation/import/parsed"
+              href={`/allocation/import/parsed?format=${state.remittanceFormat}&customer=${encodeURIComponent(state.customer)}`}
               className="flex w-full items-center justify-center gap-1 rounded-sm border border-[#4F46E5] bg-white px-[13px] py-[13px] text-[13px] font-medium text-[#4F46E5] hover:bg-[#EEF2FF]"
             >
               <NavArrowLeft className="mr-1" />
