@@ -75,7 +75,7 @@ function AppliedAmountCell({
   ariaLabel: string;
 }) {
   return (
-    <div className="flex min-h-[30px] min-w-[108px] max-w-[140px] flex-1 items-center justify-end gap-1 rounded-md border border-solid border-[#4F46E5] bg-white p-1.5 antialiased">
+    <div className="inline-flex min-h-[30px] min-w-[108px] max-w-[140px] items-center justify-end gap-1 rounded-md border border-solid border-[#4F46E5] bg-white p-1.5 antialiased">
       <input
         type="number"
         inputMode="decimal"
@@ -181,13 +181,35 @@ export function ApplyInvoicesClient() {
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,338px)] lg:items-start">
         <div className="min-w-0 overflow-hidden rounded-[10px] border border-solid border-[#E5E7EB] bg-white">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[900px] table-fixed border-collapse text-left text-sm">
+              <colgroup>
+                <col className="w-[160px]" />
+                <col className="w-[132px]" />
+                <col className="w-[72px]" />
+                <col className="w-[108px]" />
+                <col className="w-[188px]" />
+                <col className="w-[148px]" />
+                <col className="min-w-0" />
+              </colgroup>
             <thead>
               <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                {["Invoice", "Account", "Due", "Inv. Amount", "Source", "Applied", "Status"].map((h) => (
+                {(
+                  [
+                    ["Invoice", "text-left"],
+                    ["Account", "text-left"],
+                    ["Due", "text-left"],
+                    ["Inv. Amount", "text-right"],
+                    ["Source", "text-left"],
+                    ["Applied", "text-right"],
+                    ["Status", "text-left"],
+                  ] as const
+                ).map(([h, align]) => (
                   <th
                     key={h}
-                    className="whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]"
+                    className={cn(
+                      "whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]",
+                      align,
+                    )}
                   >
                     {h}
                   </th>
@@ -213,13 +235,13 @@ export function ApplyInvoicesClient() {
                         {inv.due}
                       </span>
                     </td>
-                    <td className="px-4 py-3 align-top tabular-nums font-semibold text-text-primary">
+                    <td className="px-4 py-3 text-right align-top tabular-nums font-semibold text-text-primary">
                       {formatUsd(inv.amount)}
                     </td>
                     <td className="px-4 py-3 align-top">
                       <SourceCell sources={inv.source} />
                     </td>
-                    <td className="px-4 py-3 align-top">
+                    <td className="px-4 py-3 text-right align-top">
                       <AppliedAmountCell
                         value={rowApplied}
                         onChange={(amount) => dispatch({ type: "SET_APPLIED", payload: { id: inv.id, amount } })}
