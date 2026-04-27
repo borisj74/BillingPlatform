@@ -1,84 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import {
+  AllocationBreadcrumbs,
+  allocationApplyPaperCrumbs,
+} from "@/components/allocations/AllocationBreadcrumbs";
+import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { IconInfo } from "@/components/layout/paper-sidebar/NavGlyphIcons";
+import { useAllocation } from "@/lib/allocation-store";
 import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
 
 export function OverpaymentClient() {
+  const { state } = useAllocation();
+  const accountCount: number = 3;
+
   return (
-    <div className="flex flex-col gap-[14px] overflow-clip pb-5 pt-5 antialiased">
-      <div className="flex items-center gap-[5px]">
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">Payments</span>
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">/</span>
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">...</span>
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">/</span>
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">Funding Pool</span>
-        <span className="inline-block text-[12px] leading-4 text-[#9CA3AF]">/</span>
-        <span className="inline-block text-[12px] leading-4 text-[12px] font-medium leading-4 text-[#374151]">Invoices</span>
-      </div>
+    <div className="w-full text-xs/4 antialiased">
+      <AllocationBreadcrumbs items={allocationApplyPaperCrumbs(state.customer)} variant="applyFp" />
+      <AllocationStepper className="mb-5" current={3} hideActiveSuffix />
 
-      <div className="flex shrink-0 items-center justify-between rounded-[10px] border border-[#E5E7EB] bg-white px-6 py-4">
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[#4F46E5]">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3">
-              <polyline points="20 6 9 17 4 12" />
+      <div className="flex w-full min-w-0 flex-col gap-4 pb-5 lg:flex-row lg:items-start">
+        <div className="flex min-w-0 flex-1 flex-col gap-[14px]">
+          <div className="flex w-full items-start gap-2.5 rounded-lg border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-px shrink-0">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="#D97706" />
+              <line x1="12" y1="9" x2="12" y2="13" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="17" r="1" fill="#FFFFFF" />
             </svg>
+            <span className="min-w-0 text-[12px] font-semibold leading-4 text-[#92400E]">
+              Pool exceeds invoices by $500 · Remaining balance will stay as unallocated credit on account. Decide how to
+              handle before continuing to review.
+            </span>
           </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-3 tracking-[0.06em] text-[#9CA3AF]">Step 1</div>
-            <div className="text-[12px] leading-4 text-[#9CA3AF] line-through decoration-1">Remittance Details</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#4F46E5]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[#4F46E5]">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-3 tracking-[0.06em] text-[#9CA3AF]">Step 2</div>
-            <div className="text-[12px] leading-4 text-[#9CA3AF] line-through decoration-1">Build Funding Pool</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#4F46E5]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[#4F46E5]">
-            <span className="flex text-[12px] font-bold leading-4 text-white">3</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-semibold uppercase leading-3 tracking-[0.06em] text-[#4F46E5]">Step 3</div>
-            <div className="text-[13px] font-semibold leading-4 text-[#111827]">Apply to Invoices</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#E5E7EB]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full border-2 border-[#D1D5DB] bg-white">
-            <span className="flex text-[12px] font-semibold leading-4 text-[#9CA3AF]">4</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-3 tracking-[0.06em] text-[#9CA3AF]">Step 4</div>
-            <div className="text-[12px] leading-4 text-[#9CA3AF]">Review &amp; Confirm</div>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex items-start gap-[10px] rounded-lg border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-px shrink-0">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="#D97706" />
-          <line x1="12" y1="9" x2="12" y2="13" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="12" cy="17" r="1" fill="#FFFFFF" />
-        </svg>
-        <span className="inline-block text-[12px] font-semibold leading-4 text-[#92400E]">
-          Pool exceeds invoices by $500 · Remaining balance will stay as unallocated credit on account. Decide how to handle before continuing to review.
-        </span>
-      </div>
-
-      <div className="flex w-full min-w-0 items-start justify-start gap-4">
-        <div className="flex min-w-0 w-full max-w-[762px] flex-col rounded-lg border border-[#E5E7EB] bg-white">
-          <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-[#E5E7EB] px-5 py-[14px]">
-            <span className="inline-block shrink-0 text-[14px] font-semibold leading-[18px] text-[#111827]">
-              Invoices to Allocate · Acme Corp · 3 accounts
+          <div className="flex min-w-0 w-full flex-col rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex h-[72px] shrink-0 items-center justify-between gap-3 border-b border-[#E5E7EB] px-5 py-[14px]">
+            <span className="inline-block min-w-0 shrink text-[14px] font-semibold leading-[18px] text-[#111827]">
+              Invoices to Allocate · {state.customer} · {accountCount}{" "}
+              {accountCount === 1 ? "account" : "accounts"}
             </span>
             <div className="flex items-center gap-2">
               <span className="inline-block text-[13px] leading-4 text-[#6B7280]">Applied: $12,000.00 of $12,000.00</span>
@@ -91,8 +50,8 @@ export function OverpaymentClient() {
             </div>
           </div>
 
-          {/* Paper K4A-0 — fixed column widths; header + body share one width per column (no nested 125/151 mismatch). */}
-          <div className="flex min-w-0 overflow-x-auto">
+          {/* Paper K4A-0 — min widths preserve layout; Applied column grows so table matches warning column width. */}
+          <div className="flex min-w-0 w-full overflow-x-auto">
             <div className="flex w-full min-w-[762px]">
               <div className="flex w-[151px] shrink-0 flex-col">
                 <div className="flex min-h-0 items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-5 py-2.5">
@@ -201,8 +160,8 @@ export function OverpaymentClient() {
                 </div>
               </div>
 
-              {/* 151+117+75+129+130+160 = 762 — matches card width so no dead space on the right */}
-              <div className="flex w-[160px] shrink-0 flex-col items-stretch">
+              {/* Applied column absorbs extra width when the table stretches with the alert column */}
+              <div className="flex min-w-[160px] flex-1 flex-col items-stretch">
                 <div className="flex w-full items-center border-b border-[#E5E7EB] bg-[#F9FAFB] px-5 py-2.5">
                   <span className="text-[11px] font-semibold uppercase leading-[14px] tracking-[0.05em] text-[#9CA3AF]">
                     Applied
@@ -235,8 +194,9 @@ export function OverpaymentClient() {
             </div>
           </div>
         </div>
+        </div>
 
-        <div className="flex shrink-0 flex-col gap-3" style={{ minWidth: 286, width: 383 }}>
+        <div className="flex w-full shrink-0 flex-col gap-3 lg:w-[383px] lg:min-w-[286px]">
           <div className="rounded-lg border border-[#E5E7EB] bg-white px-[18px] py-[18px]">
             <div className="mb-[14px] flex items-center justify-between">
               <span className="text-[13px] font-semibold leading-4 text-[#111827]">Funding Pool Status</span>
@@ -346,11 +306,11 @@ export function OverpaymentClient() {
 
           <div className="flex flex-col gap-2">
             <Link
-              href="/allocation/apply"
+              href="/allocation/funding"
               className="flex items-center justify-center gap-2 rounded-[4px] border border-[#4F46E5] bg-white px-[13px] py-[13px] text-[13px] font-medium leading-4 text-[#4F46E5] hover:bg-[#EEF2FF]"
             >
               <NavArrowLeft />
-              <span>Back to Remittance</span>
+              <span>Back to Funding Pool</span>
             </Link>
             <button
               disabled
