@@ -268,7 +268,7 @@ export function ImportRemittanceClient() {
               <div className="min-h-0 flex-[2] rounded-lg border border-[#E5E7EB] bg-white p-5">
                 <div className="mb-3 flex items-center justify-between gap-2">
                   <h3 className="text-[13px] font-semibold leading-4 text-[#111827]">Remittance preview</h3>
-                  <span className="text-[11px] font-medium leading-[0.875rem] text-[#3B82F6]">View full PDF ↗</span>
+                  <span className="text-[11px] font-medium leading-[0.875rem] text-[#3B82F6]">View full PDF</span>
                 </div>
                 <div className="mb-2.5 rounded-sm bg-[#F9FAFB] p-3">
                   <p className="text-[12px] leading-[1.6] text-[#374151]">
