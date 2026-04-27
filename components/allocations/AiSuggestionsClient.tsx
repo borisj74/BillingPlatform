@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import {
+  AllocationBreadcrumbs,
+  allocationSuggestionsPaperCrumbs,
+} from "@/components/allocations/AllocationBreadcrumbs";
+import { AllocationStepper } from "@/components/allocations/AllocationStepper";
 import { NavArrowLeft, NavArrowRight } from "@/components/ui/NavArrowIcons";
+import { useAllocation } from "@/lib/allocation-store";
+import { buttonVariants } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -48,72 +55,23 @@ const CopilotIcon = () => (
 );
 
 export function AiSuggestionsClient() {
+  const { state } = useAllocation();
+
   return (
-    <div className="flex min-h-screen flex-col gap-[14px] bg-[#F9FAFB] px-4 py-[22px] antialiased md:px-6">
-
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-[5px]">
-        <span className="text-[12px] leading-[16px] text-[#9CA3AF]">Payments</span>
-        <span className="text-[12px] leading-[16px] text-[#9CA3AF]">/</span>
-        <span className="text-[12px] leading-[16px] text-[#9CA3AF]">New Allocation — Acme Corp</span>
-        <span className="text-[12px] leading-[16px] text-[#9CA3AF]">/</span>
-        <span className="text-[12px] font-medium leading-[16px] text-[#374151]">AI Insights</span>
-      </div>
-
-      {/* Stepper */}
-      <div className="flex items-center rounded-[10px] border border-[#E5E7EB] bg-white px-6 py-4">
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[#4F46E5]">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-[12px] tracking-[0.06em] text-[#9CA3AF]">Step 1</div>
-            <div className="text-[12px] leading-[16px] text-[#9CA3AF] line-through decoration-[1px]">Remittance Details</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#4F46E5]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[#4F46E5]">
-            <span className="text-[12px] font-bold leading-[16px] text-white">2</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-semibold uppercase leading-[12px] tracking-[0.06em] text-[#4F46E5]">Step 2</div>
-            <div className="text-[13px] font-semibold leading-[16px] text-[#111827]">Build Funding Pool</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#E5E7EB]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full border-2 border-[#D1D5DB] bg-white">
-            <span className="text-[12px] font-semibold leading-[16px] text-[#9CA3AF]">3</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-[12px] tracking-[0.06em] text-[#9CA3AF]">Step 3</div>
-            <div className="text-[12px] leading-[16px] text-[#9CA3AF]">Apply to Invoices</div>
-          </div>
-        </div>
-        <div className="mx-4 h-[1.5px] flex-1 bg-[#E5E7EB]" />
-        <div className="flex items-center gap-[10px]">
-          <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full border-2 border-[#D1D5DB] bg-white">
-            <span className="text-[12px] font-semibold leading-[16px] text-[#9CA3AF]">4</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase leading-[12px] tracking-[0.06em] text-[#9CA3AF]">Step 4</div>
-            <div className="text-[12px] leading-[16px] text-[#9CA3AF]">Review &amp; Confirm</div>
-          </div>
-        </div>
-      </div>
+    <div className="w-full text-xs/4 antialiased">
+      <AllocationBreadcrumbs className="mb-3.5" items={allocationSuggestionsPaperCrumbs(state.customer)} />
+      <AllocationStepper className="mb-5" current={2} />
 
       {/* AI banner */}
-      <div className="flex items-center gap-[14px] rounded-[10px] border border-[#E6E7EB] bg-[#FBFBFB] px-4 py-4">
+      <div className="mb-5 flex items-center gap-3.5 rounded-[10px] border border-[#E6E7EB] bg-[#FBFBFB] px-4 py-4">
         <div className="shrink-0 rounded-[6px] p-1">
           <CopilotIcon />
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-[13.5px] font-semibold leading-[18px] text-[#111827]">AI-powered suggestions ready</div>
           <div className="mt-[2px] text-[12px] leading-[16px] text-[#6B7280]">
-            Based on Acme Corp's payment history and remittance data, 3 intelligent suggestions are available to speed up allocation.
+            Based on {state.customer}&apos;s payment history and remittance data, 3 intelligent suggestions are available to
+            speed up allocation.
           </div>
         </div>
         <button className="shrink-0 rounded-[7px] bg-[#4F46E5] px-[18px] py-[9px] text-[13px] font-semibold leading-[16px] text-white hover:bg-[#4338CA]">
@@ -125,7 +83,7 @@ export function AiSuggestionsClient() {
       </div>
 
       {/* Three suggestion cards */}
-      <div className="flex items-stretch gap-[14px]">
+      <div className="flex flex-col items-stretch gap-4 lg:flex-row">
 
         {/* Card 1 — Predictive Match */}
         <div className="flex flex-1 flex-col gap-[14px] rounded-[10px] border border-[#E5E7EB] bg-white px-4 py-4">
@@ -244,26 +202,31 @@ export function AiSuggestionsClient() {
       </div>
 
       {/* Footer actions */}
-      <div className="flex items-center justify-between">
-        <span className="text-[12.5px] leading-[16px] text-[#9CA3AF]">Session auto-saved · You can resume later</span>
-        <div className="flex shrink-0 gap-2">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <span className="text-[12.5px] leading-4 text-[#9CA3AF]">Session auto-saved · You can resume later</span>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
           <Link
             href="/allocation/funding"
-            className="flex min-w-[120px] items-center justify-center gap-2 rounded-[4px] border border-[#4F46E5] bg-white px-[13px] py-[13px] text-center text-[13px] font-medium leading-[16px] text-[#4F46E5] hover:bg-[#EEF2FF]"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "default" }),
+              "inline-flex min-h-11 items-center justify-center gap-2 border-brand font-medium text-brand hover:bg-brand-subtle",
+            )}
           >
             <NavArrowLeft />
             <span>Back</span>
           </Link>
           <Link
             href="/allocation/apply"
-            className="flex min-w-[220px] items-center justify-center gap-2 rounded-[4px] bg-[#4F46E5] px-[13px] py-[13px] text-center text-[14px] font-medium leading-[18px] text-white hover:bg-[#4338CA]"
+            className={cn(
+              buttonVariants({ variant: "default", size: "default" }),
+              "inline-flex min-h-11 items-center justify-center gap-2 bg-brand text-white hover:bg-brand/90",
+            )}
           >
             <span>Continue to Apply Invoices</span>
             <NavArrowRight variant="onPrimary" />
           </Link>
         </div>
       </div>
-
     </div>
   );
 }

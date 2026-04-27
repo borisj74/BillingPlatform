@@ -249,6 +249,18 @@ export function allocationFundingPaperCrumbs(customer: string): Crumb[] {
   ];
 }
 
+/** Paper K4B-0 — AI smart suggestions (between funding pool and apply; step 2 context). */
+export function allocationSuggestionsPaperCrumbs(customer: string): Crumb[] {
+  const q = encodeURIComponent(customer);
+  return [
+    { label: "Payments", href: "/accounts" },
+    { label: "Payment Allocations", href: "/accounts" },
+    { label: `New Allocation — ${customer}`, href: `/allocation/import?format=pdf&customer=${q}` },
+    { label: "Funding Pool", href: "/allocation/funding" },
+    { label: "AI Insights" },
+  ];
+}
+
 /** Hub at /accounts — three segments; all visible (no ellipsis). */
 export function hubPaymentAllocationsCrumbs(): Crumb[] {
   return [
